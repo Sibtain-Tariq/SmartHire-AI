@@ -22,7 +22,6 @@ export default function DashboardLayout({ title = 'Dashboard', breadcrumbItems, 
           title={title}
           breadcrumbItems={breadcrumbItems}
           onMenuClick={() => setMobileOpen(true)}
-          onSidebarToggle={() => setMobileOpen(true)}
         />
         <motion.div
           key={title}

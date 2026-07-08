@@ -65,10 +65,10 @@ export default function DashboardPage() {
 
         <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]" aria-label="Interview progress and activity">
           <InterviewProgressCard />
-          <div>
-          <SectionHeader eyebrow="Activity" title="Recent activity" />
+          <section aria-labelledby="recent-activity">
+            <SectionHeader id="recent-activity" eyebrow="Activity" title="Recent activity" />
             <ActivityTimeline />
-          </div>
+          </section>
         </section>
 
         <section aria-labelledby="recommended-next-steps">

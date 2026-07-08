@@ -9,7 +9,7 @@ export default function ComingSoonSection() {
         return (
           <article
             key={feature.title}
-            aria-disabled="true"
+            aria-label={`${feature.title} coming soon`}
             className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-5 opacity-80"
           >
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-slate-400 shadow-sm">

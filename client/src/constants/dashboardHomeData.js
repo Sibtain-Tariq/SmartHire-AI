@@ -1,6 +1,5 @@
 import {
   Activity,
-  AlertCircle,
   BarChart3,
   BrainCircuit,
   Briefcase,
@@ -220,8 +219,6 @@ export const reportActions = {
   view: Eye,
   download: Download,
 }
-
-export const emptyStateIcon = AlertCircle
 
 export const currentFocus = {
   icon: Clock,
