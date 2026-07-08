@@ -78,7 +78,7 @@ export default function DashboardPage() {
             title="Recommended next steps"
             description="Mock recommendations that preview how future AI insights can guide preparation."
           />
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {recommendations.map((recommendation) => (
               <RecommendationCard key={recommendation.title} recommendation={recommendation} />
             ))}

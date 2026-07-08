@@ -32,13 +32,13 @@ export default function Sidebar({ collapsed = false, onToggle, onNavigate }) {
 
       <nav className="mt-8 flex flex-1 flex-col gap-1" aria-label="Primary">
         {dashboardNavigation.map((item) => (
-          <SidebarItem key={item.label} item={item} collapsed={collapsed} onSelect={onNavigate} />
+          <SidebarItem key={item.label} item={item} collapsed={collapsed} onSelect={onNavigate} layoutId="sidebar-active" />
         ))}
       </nav>
 
       <div className="border-t border-slate-200 pt-4">
         {dashboardFooterNavigation.map((item) => (
-          <SidebarItem key={item.label} item={item} collapsed={collapsed} onSelect={onNavigate} />
+          <SidebarItem key={item.label} item={item} collapsed={collapsed} onSelect={onNavigate} layoutId="sidebar-active" />
         ))}
         {!collapsed ? (
           <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-500 shadow-sm">

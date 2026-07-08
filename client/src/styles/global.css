@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design Tokens for UI Consistency */
+
 :root {
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
@@ -36,10 +38,4 @@ body {
 
 a {
   text-decoration: none;
-}
-
-.card {
-  background: var(--color-surface);
-  border-radius: var(--radius-card);
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }

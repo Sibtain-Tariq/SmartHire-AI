@@ -3,14 +3,15 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Calendar, Quote, UploadCloud } from 'lucide-react'
 import { currentFocus, dashboardUser } from '../../../constants/dashboardHomeData'
 
-const formattedDate = new Intl.DateTimeFormat('en-US', {
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-}).format(new Date())
+
 
 export default function DashboardHero() {
+  const formattedDate = new Intl.DateTimeFormat('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(new Date())
   const FocusIcon = currentFocus.icon
 
   return (

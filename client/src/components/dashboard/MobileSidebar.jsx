@@ -47,13 +47,13 @@ export default function MobileSidebar({ open, onClose }) {
 
             <nav className="mt-8 flex flex-1 flex-col gap-1" aria-label="Mobile primary">
               {dashboardNavigation.map((item) => (
-                <SidebarItem key={item.label} item={item} onSelect={onClose} />
+                <SidebarItem key={item.label} item={item} onSelect={onClose} layoutId="mobile-sidebar-active" />
               ))}
             </nav>
 
             <div className="border-t border-slate-200 pt-4">
               {dashboardFooterNavigation.map((item) => (
-                <SidebarItem key={item.label} item={item} onSelect={onClose} />
+                <SidebarItem key={item.label} item={item} onSelect={onClose} layoutId="mobile-sidebar-active" />
               ))}
               <p className="mt-4 px-3 text-xs font-medium text-slate-500">{productVersion}</p>
             </div>

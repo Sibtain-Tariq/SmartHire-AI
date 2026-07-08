@@ -2,9 +2,9 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
-export default function SidebarItem({ item, collapsed = false, onSelect }) {
+export default function SidebarItem({ item, collapsed = false, onSelect, layoutId = 'active-sidebar-item' }) {
   const location = useLocation()
-  const isActive = item.path !== '#' && location.pathname === item.path
+  const isActive = item.path !== '#' && location.pathname.startsWith(item.path) && (item.path !== '/dashboard' || location.pathname === '/dashboard')
   const Icon = item.icon
   const itemClass = `group relative flex min-h-11 items-center gap-3 rounded-2xl px-3 text-sm font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-sky-400 ${
     isActive
@@ -16,7 +16,7 @@ export default function SidebarItem({ item, collapsed = false, onSelect }) {
     <>
       {isActive ? (
         <motion.span
-          layoutId="active-sidebar-item"
+          layoutId={layoutId}
           className="absolute inset-0 rounded-2xl bg-slate-950"
           transition={{ type: 'spring', stiffness: 420, damping: 34 }}
         />
