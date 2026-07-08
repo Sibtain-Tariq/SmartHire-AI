@@ -1,6 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, LogIn, Sparkles } from 'lucide-react'
 
 const links = [
   { label: 'Features', href: '#features' },
@@ -37,13 +38,22 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <a
-          href="#contact"
-          className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
-        >
-          Book a demo
-          <ArrowRight size={16} />
-        </a>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+          >
+            Login
+            <LogIn size={16} />
+          </Link>
+          <a
+            href="#contact"
+            className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 sm:inline-flex"
+          >
+            Book a demo
+            <ArrowRight size={16} />
+          </a>
+        </div>
       </div>
     </motion.header>
   )
