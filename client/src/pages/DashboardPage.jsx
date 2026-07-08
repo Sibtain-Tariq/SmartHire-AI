@@ -21,7 +21,7 @@ import {
 
 export default function DashboardPage() {
   return (
-    <DashboardLayout title="Dashboard" breadcrumbItems={[{ label: 'Dashboard' }]}>
+    <DashboardLayout breadcrumbItems={[{ label: 'Dashboard' }]}>
       <DashboardContainer className="gap-8">
         <DashboardHero />
 

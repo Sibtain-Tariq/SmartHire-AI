@@ -1,12 +1,12 @@
 import React from 'react'
-import { Menu, MessageSquare } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import Breadcrumb from './Breadcrumb'
 import NotificationButton from './NotificationButton'
 import SearchBar from './SearchBar'
 import ThemeToggle from './ThemeToggle'
 import UserDropdown from './UserDropdown'
 
-export default function TopNavbar({ title = 'Dashboard', breadcrumbItems, onMenuClick }) {
+export default function TopNavbar({ breadcrumbItems, onMenuClick }) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
       <div className="flex h-16 items-center gap-3 px-4 sm:px-6 lg:px-8">
@@ -21,7 +21,6 @@ export default function TopNavbar({ title = 'Dashboard', breadcrumbItems, onMenu
 
         <div className="min-w-0 flex-1">
           <Breadcrumb items={breadcrumbItems} />
-          <p className="mt-0.5 truncate text-sm font-semibold text-slate-950">{title}</p>
         </div>
 
         <div className="hidden flex-1 justify-center md:flex">
@@ -29,13 +28,6 @@ export default function TopNavbar({ title = 'Dashboard', breadcrumbItems, onMenu
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Messages"
-            className="hidden h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white/80 text-slate-600 shadow-sm outline-none transition hover:-translate-y-0.5 hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-sky-400 sm:flex"
-          >
-            <MessageSquare size={17} aria-hidden="true" />
-          </button>
           <NotificationButton />
           <div className="hidden md:block">
             <ThemeToggle />

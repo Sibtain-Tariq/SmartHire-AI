@@ -18,7 +18,7 @@ export default function Sidebar({ collapsed = false, onToggle, onNavigate }) {
       className="hidden h-screen shrink-0 border-r border-slate-200/80 bg-slate-50/95 p-4 lg:sticky lg:top-0 lg:flex lg:flex-col"
       aria-label="Dashboard navigation"
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className={`flex items-center ${collapsed ? 'flex-col gap-3' : 'justify-between gap-2'}`}>
         <Logo collapsed={collapsed} />
         <button
           type="button"

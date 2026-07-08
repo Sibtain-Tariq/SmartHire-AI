@@ -4,7 +4,7 @@ import MobileSidebar from './MobileSidebar'
 import Sidebar from './Sidebar'
 import TopNavbar from './TopNavbar'
 
-export default function DashboardLayout({ title = 'Dashboard', breadcrumbItems, children }) {
+export default function DashboardLayout({ breadcrumbItems, children }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -19,12 +19,11 @@ export default function DashboardLayout({ title = 'Dashboard', breadcrumbItems, 
 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopNavbar
-          title={title}
           breadcrumbItems={breadcrumbItems}
           onMenuClick={() => setMobileOpen(true)}
         />
         <motion.div
-          key={title}
+          key="dashboard-content"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.28, ease: 'easeOut' }}
