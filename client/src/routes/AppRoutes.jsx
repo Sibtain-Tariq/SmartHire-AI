@@ -9,6 +9,11 @@ const RegisterPage = lazy(() => import('../features/auth/pages/RegisterPage'))
 const ForgotPasswordPage = lazy(() => import('../features/auth/pages/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('../features/auth/pages/ResetPasswordPage'))
 
+// Resume Module Routes
+const ResumeDashboard = lazy(() => import('../features/resumes/pages/ResumeDashboard'))
+const ResumeUploader = lazy(() => import('../features/resumes/pages/ResumeUploader'))
+const ResumeViewPage = lazy(() => import('../features/resumes/pages/ResumeViewPage'))
+
 export default function AppRoutes() {
   return (
     <>
@@ -23,7 +28,12 @@ export default function AppRoutes() {
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/resumes" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Resumes Placeholder</div>} />
+        
+        {/* Resume Management */}
+        <Route path="/resumes" element={<ResumeDashboard />} />
+        <Route path="/resumes/upload" element={<ResumeUploader />} />
+        <Route path="/resumes/:id" element={<ResumeViewPage />} />
+
         <Route path="/ats" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">ATS Placeholder</div>} />
         <Route path="/interviews" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Interviews Placeholder</div>} />
         <Route path="/profile" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Profile Placeholder</div>} />

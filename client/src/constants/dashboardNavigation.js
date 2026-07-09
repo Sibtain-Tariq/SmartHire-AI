@@ -12,7 +12,15 @@ import {
 
 export const dashboardNavigation = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { label: 'Resume', path: '/resumes', icon: ScrollText },
+  { 
+    label: 'Resume', 
+    path: '/resumes', 
+    icon: ScrollText,
+    children: [
+      { label: 'All Resumes', path: '/resumes' },
+      { label: 'Upload Resume', path: '/resumes/upload' }
+    ]
+  },
   { label: 'ATS Reports', path: '/ats', icon: FileSearch },
   { label: 'Job Matching', path: '/job-matching', icon: Sparkles },
   { label: 'Interview Prep', path: '/interviews', icon: MessageSquare },
