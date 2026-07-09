@@ -9,6 +9,7 @@ import ResumeDropzone from '../components/ResumeDropzone'
 import ResumeHealthScore from '../components/ResumeHealthScore'
 import ScoreBreakdownCard from '../components/ScoreBreakdownCard'
 import ATSReadinessChecklist from '../components/ATSReadinessChecklist'
+import SectionAnalysis from '../components/SectionAnalysis'
 import KeywordAnalysisSection from '../components/KeywordAnalysisSection'
 import StrengthsWeaknessesSection from '../components/StrengthsWeaknessesSection'
 import AISuggestionsSection from '../components/AISuggestionsSection'
@@ -182,6 +183,9 @@ export default function ResumeAnalyzerPage() {
 
               {/* ATS Readiness Checklist */}
               <ATSReadinessChecklist />
+
+              {/* Section-by-Section Analysis */}
+              <SectionAnalysis />
 
               {/* Keyword Analysis Section */}
               <KeywordAnalysisSection />
