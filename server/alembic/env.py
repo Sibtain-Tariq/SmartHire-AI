@@ -17,6 +17,7 @@ from app.database.base import Base
 # Import all models here for Alembic autogenerate to detect them
 from app.models.user import User
 from app.models.resume import Resume
+from app.models.ats_report import ATSReport
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

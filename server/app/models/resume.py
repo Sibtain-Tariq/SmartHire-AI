@@ -17,3 +17,6 @@ class Resume(UUIDMixin, TimestampMixin, Base):
 
     # Relationship back to the User model
     user = relationship("User", back_populates="resumes")
+    
+    # One-to-One relationship with the ATS Report
+    ats_report = relationship("ATSReport", back_populates="resume", uselist=False, cascade="all, delete-orphan")
