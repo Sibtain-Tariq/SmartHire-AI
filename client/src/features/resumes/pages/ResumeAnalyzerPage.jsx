@@ -9,6 +9,7 @@ import ResumeDropzone from '../components/ResumeDropzone'
 import ScoreBreakdownCard from '../components/ScoreBreakdownCard'
 import KeywordAnalysisSection from '../components/KeywordAnalysisSection'
 import StrengthsWeaknessesSection from '../components/StrengthsWeaknessesSection'
+import AISuggestionsSection from '../components/AISuggestionsSection'
 
 const statusConfig = {
   parsed: { color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle2, label: 'Successfully Parsed' },
@@ -233,7 +234,10 @@ export default function ResumeAnalyzerPage() {
               {/* 5. Strengths & Weaknesses Section */}
               <StrengthsWeaknessesSection />
 
-              {/* 6. Resume Actions */}
+              {/* 6. AI Suggestions Section */}
+              <AISuggestionsSection />
+
+              {/* 7. Resume Actions */}
               <section className="flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-200 pt-8 pb-4">
                 <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900">
                   <Trash2 size={18} />
