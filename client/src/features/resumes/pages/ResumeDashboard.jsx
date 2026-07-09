@@ -1,5 +1,4 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Plus, SlidersHorizontal, ArrowDownAZ, Loader2, FileX } from 'lucide-react'
 import DashboardLayout from '../../../components/dashboard/DashboardLayout'
@@ -8,6 +7,10 @@ import SectionHeader from '../../../components/dashboard/home/SectionHeader'
 import StatCard from '../../../components/dashboard/home/StatCard'
 import ResumeCard from '../components/ResumeCard'
 import { useResumes } from '../hooks/useResumes'
+import Modal from '../../../components/ui/Modal'
+import SlidePanel from '../../../components/ui/SlidePanel'
+import ResumeDropzone from '../components/ResumeDropzone'
+import ResumeDetails from '../components/ResumeDetails'
 
 export default function ResumeDashboard() {
   const { 
@@ -23,6 +26,26 @@ export default function ResumeDashboard() {
     totalCount
   } = useResumes()
 
+  // State for overlays
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+  const [selectedResume, setSelectedResume] = useState(null)
+
+  const handleUploadComplete = (file, isSuccess) => {
+    if (isSuccess) {
+      console.log('Successfully uploaded:', file.name)
+      // Wait a moment then close modal automatically
+      setTimeout(() => setIsUploadModalOpen(false), 2000)
+    }
+  }
+
+  const handleOpenDetails = (resume) => {
+    setSelectedResume(resume)
+  }
+
+  const handleCloseDetails = () => {
+    setSelectedResume(null)
+  }
+
   return (
     <DashboardLayout breadcrumbItems={[{ label: 'Resumes' }]}>
       <DashboardContainer className="gap-8">
@@ -32,13 +55,13 @@ export default function ResumeDashboard() {
             <h1 className="text-3xl font-bold tracking-tight text-slate-900">Resume Library</h1>
             <p className="mt-1 text-slate-500">Manage, parse, and analyze your candidate resumes.</p>
           </div>
-          <Link
-            to="/resumes/upload"
+          <button
+            onClick={() => setIsUploadModalOpen(true)}
             className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-sky-400 hover:shadow-sky-500/20 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
           >
             <Plus size={18} />
             Upload Resume
-          </Link>
+          </button>
         </section>
 
         {/* Statistics Cards */}
@@ -120,7 +143,12 @@ export default function ResumeDashboard() {
                 className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
               >
                 {resumes.map((resume, index) => (
-                  <ResumeCard key={resume.id} resume={resume} index={index} />
+                  <ResumeCard 
+                    key={resume.id} 
+                    resume={resume} 
+                    index={index} 
+                    onOpen={handleOpenDetails}
+                  />
                 ))}
               </motion.div>
             ) : (
@@ -147,17 +175,43 @@ export default function ResumeDashboard() {
                     Clear all filters
                   </button>
                 ) : (
-                  <Link
-                    to="/resumes/upload"
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
                     className="mt-6 rounded-xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
                   >
                     Upload Resume
-                  </Link>
+                  </button>
                 )}
               </motion.div>
             )}
           </AnimatePresence>
         </section>
+
+        {/* OVERLAYS */}
+        
+        {/* Upload Modal */}
+        <Modal 
+          isOpen={isUploadModalOpen} 
+          onClose={() => setIsUploadModalOpen(false)}
+          title="Upload New Resume"
+        >
+          <ResumeDropzone 
+            onUploadComplete={handleUploadComplete}
+            maxSizeMB={5}
+            acceptedTypes={['.pdf', '.docx', '.doc']}
+            mockMode={true}
+          />
+        </Modal>
+
+        {/* Details Slide Panel */}
+        <SlidePanel
+          isOpen={!!selectedResume}
+          onClose={handleCloseDetails}
+          title="Resume Details"
+        >
+          <ResumeDetails resume={selectedResume} />
+        </SlidePanel>
+
       </DashboardContainer>
     </DashboardLayout>
   )

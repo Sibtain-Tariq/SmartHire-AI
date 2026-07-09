@@ -11,8 +11,6 @@ const ResetPasswordPage = lazy(() => import('../features/auth/pages/ResetPasswor
 
 // Resume Module Routes
 const ResumeDashboard = lazy(() => import('../features/resumes/pages/ResumeDashboard'))
-const ResumeUploader = lazy(() => import('../features/resumes/pages/ResumeUploader'))
-const ResumeViewPage = lazy(() => import('../features/resumes/pages/ResumeViewPage'))
 
 export default function AppRoutes() {
   return (
@@ -30,9 +28,7 @@ export default function AppRoutes() {
         <Route path="/dashboard" element={<DashboardPage />} />
         
         {/* Resume Management */}
-        <Route path="/resumes" element={<ResumeDashboard />} />
-        <Route path="/resumes/upload" element={<ResumeUploader />} />
-        <Route path="/resumes/:id" element={<ResumeViewPage />} />
+        <Route path="/resume" element={<ResumeDashboard />} />
 
         <Route path="/ats" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">ATS Placeholder</div>} />
         <Route path="/interviews" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Interviews Placeholder</div>} />

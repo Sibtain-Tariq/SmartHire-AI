@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FileText, MoreVertical, CheckCircle2, Clock, AlertCircle, Download, Trash2, ExternalLink } from 'lucide-react'
 
@@ -9,7 +8,7 @@ const statusConfig = {
   needs_review: { color: 'text-amber-600', bg: 'bg-amber-50', icon: AlertCircle, label: 'Needs Review' },
 }
 
-export default function ResumeCard({ resume, index }) {
+export default function ResumeCard({ resume, index, onOpen }) {
   const status = statusConfig[resume.status] || statusConfig.needs_review
   const StatusIcon = status.icon
 
@@ -44,11 +43,11 @@ export default function ResumeCard({ resume, index }) {
         </div>
 
         <div className="mt-4">
-          <Link to={`/resumes/${resume.id}`} className="block">
+          <button onClick={() => onOpen(resume)} className="block text-left w-full">
             <h3 className="text-lg font-semibold tracking-tight text-slate-900 group-hover:text-sky-600 transition-colors">
               {resume.title}
             </h3>
-          </Link>
+          </button>
           <p className="mt-1 text-sm text-slate-500 truncate">{resume.original_filename}</p>
         </div>
 
@@ -81,9 +80,9 @@ export default function ResumeCard({ resume, index }) {
       
       {/* Quick Actions overlay on hover */}
       <div className="absolute bottom-5 left-5 right-5 flex justify-center gap-2 opacity-0 transition-opacity group-hover:opacity-100 bg-white/90 backdrop-blur-sm pt-2 rounded-b-xl border-t border-transparent">
-        <Link to={`/resumes/${resume.id}`} className="flex-1 inline-flex justify-center items-center gap-2 rounded-xl bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-600 hover:bg-sky-100">
+        <button onClick={() => onOpen(resume)} className="flex-1 inline-flex justify-center items-center gap-2 rounded-xl bg-sky-50 px-3 py-2 text-sm font-semibold text-sky-600 hover:bg-sky-100">
           <ExternalLink size={16} /> Open
-        </Link>
+        </button>
         <button className="inline-flex justify-center items-center rounded-xl bg-slate-50 px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900">
           <Download size={16} />
         </button>
