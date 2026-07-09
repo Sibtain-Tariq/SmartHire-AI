@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, FileText, Download, CheckCircle2, AlertCircle, Clock, BarChart3, Target, Sparkles, Building2, Trash2, RefreshCw } from 'lucide-react'
+import { FileText, CheckCircle2, AlertCircle, Clock, BarChart3, Target, Sparkles, Building2, Trash2, RefreshCw } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import DashboardLayout from '../../../components/dashboard/DashboardLayout'
 import DashboardContainer from '../../../components/dashboard/DashboardContainer'
