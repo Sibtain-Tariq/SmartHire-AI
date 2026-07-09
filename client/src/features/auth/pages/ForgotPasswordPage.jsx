@@ -2,25 +2,29 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, Loader2, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
+import { useAuth } from '../context/AuthContext'
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
 
-  const handleSubmit = (e) => {
+  const { resetPassword } = useAuth()
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
     setSuccess(false)
     
-    // Simulate network request
-    setTimeout(() => {
-      setIsLoading(false)
+    try {
+      await resetPassword(e.target.email.value)
       setSuccess(true)
-      // Uncomment to see error state:
-      // setError('We could not find an account associated with this email.')
-    }, 1500)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

@@ -1,24 +1,29 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { User, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
+import { useAuth } from '../context/AuthContext'
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = (e) => {
+  const { register } = useAuth()
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
     
-    // Simulate network request for UI testing
-    setTimeout(() => {
+    try {
+      await register(e.target.name.value, e.target.email.value, e.target.password.value)
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err.message)
       setIsLoading(false)
-      // Uncomment to see error state:
-      // setError('An account with this email already exists.')
-    }, 1500)
+    }
   }
 
   return (

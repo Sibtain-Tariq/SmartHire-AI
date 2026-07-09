@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../../../lib/firebase'
+import { authService } from '../services/authService'
 import { Loader2 } from 'lucide-react'
 
 // Create the authentication context
@@ -23,7 +24,7 @@ export function useAuth() {
  * Responsibilities:
  * - Listens to Firebase auth state changes.
  * - Stores the current authenticated user and loading state.
- * - Provides auth-related placeholders for business logic.
+ * - Provides auth-related logic connected to Firebase.
  * - Blocks rendering of children while the initial auth state is loading.
  */
 export function AuthProvider({ children }) {
@@ -45,17 +46,27 @@ export function AuthProvider({ children }) {
     return () => unsubscribe()
   }, [])
 
-  // Placeholders for future business logic
   const login = async (email, password) => {
-    console.log('Login placeholder triggered for:', email)
+    const result = await authService.login(email, password)
+    if (result.error) throw new Error(result.error)
+    return result.user
   }
 
   const register = async (name, email, password) => {
-    console.log('Register placeholder triggered for:', email)
+    const result = await authService.register(name, email, password)
+    if (result.error) throw new Error(result.error)
+    return result.user
   }
 
   const logout = async () => {
-    console.log('Logout placeholder triggered')
+    const result = await authService.logout()
+    if (result.error) throw new Error(result.error)
+    setUser(null)
+  }
+  
+  const resetPassword = async (email) => {
+    const result = await authService.resetPassword(email)
+    if (result.error) throw new Error(result.error)
   }
 
   const value = {
@@ -65,7 +76,8 @@ export function AuthProvider({ children }) {
     setUser,
     login,
     register,
-    logout
+    logout,
+    resetPassword
   }
 
   // Show a loading screen while authentication state initializes
