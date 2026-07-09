@@ -1,75 +1,116 @@
 import React from 'react'
-import { Sparkles, ArrowUpCircle, CheckCircle2, AlertTriangle, AlertCircle, Info, TrendingUp, Search, Briefcase, Award } from 'lucide-react'
+import { Sparkles, ArrowUpCircle, CheckCircle2, AlertTriangle, AlertCircle, Info, TrendingUp, Search, Briefcase, Award, Layers, Type, Cloud, Target, Code } from 'lucide-react'
 
 const strengthsMock = [
   {
     id: 's1',
-    title: 'Strong Technical Skills',
-    explanation: 'You have a high density of in-demand hard skills relevant to the role.',
-    icon: TrendingUp,
-    impact: 'high', // high, medium
+    title: 'Strong formatting',
+    explanation: 'Your document uses standard fonts and clear headings easily parsed by robots.',
+    icon: CheckCircle2,
+    severity: 'High',
+    impact: '+8',
   },
   {
     id: 's2',
-    title: 'ATS-Friendly Formatting',
-    explanation: 'Your document uses standard fonts and clear headings easily parsed by robots.',
-    icon: CheckCircle2,
-    impact: 'high',
+    title: 'Excellent technical skills',
+    explanation: 'You have a high density of in-demand hard skills relevant to the role.',
+    icon: Code,
+    severity: 'High',
+    impact: '+12',
   },
   {
     id: 's3',
-    title: 'Action Verbs Used Effectively',
-    explanation: 'You start your bullet points with strong action verbs (e.g., Developed, Managed).',
+    title: 'Consistent section hierarchy',
+    explanation: 'Standard logical ordering from experience to education.',
+    icon: Layers,
+    severity: 'Medium',
+    impact: '+5',
+  },
+  {
+    id: 's4',
+    title: 'Good readability',
+    explanation: 'Professional tone with excellent grammar and structure.',
+    icon: Type,
+    severity: 'Medium',
+    impact: '+4',
+  },
+  {
+    id: 's5',
+    title: 'Strong action verbs',
+    explanation: 'You start your bullet points with strong action verbs.',
     icon: Sparkles,
-    impact: 'medium',
+    severity: 'High',
+    impact: '+6',
   },
 ]
 
 const weaknessesMock = [
   {
     id: 'w1',
-    title: 'Missing Measurable Achievements',
-    explanation: 'Most of your bullet points describe responsibilities rather than quantified results (e.g., "Increased sales by 20%").',
-    icon: AlertTriangle,
-    severity: 'critical', // critical, high, medium
+    title: 'Missing certifications',
+    explanation: 'Adding relevant industry certifications would significantly boost your profile.',
+    icon: Award,
+    severity: 'Medium',
+    impact: '+4',
   },
   {
     id: 'w2',
-    title: 'Limited Leadership Experience',
-    explanation: 'There are few mentions of mentoring, leading projects, or cross-functional collaboration.',
+    title: 'Weak project descriptions',
+    explanation: 'Project descriptions are too brief and lack GitHub/live links.',
     icon: Briefcase,
-    severity: 'high',
+    severity: 'High',
+    impact: '+8',
   },
   {
     id: 'w3',
-    title: 'Missing Certifications',
-    explanation: 'Adding relevant industry certifications (like AWS Solutions Architect) would significantly boost your profile.',
-    icon: Award,
-    severity: 'medium',
+    title: 'Few measurable achievements',
+    explanation: 'Most bullet points describe responsibilities rather than quantified results.',
+    icon: TrendingUp,
+    severity: 'Critical',
+    impact: '+15',
+  },
+  {
+    id: 'w4',
+    title: 'Missing cloud technologies',
+    explanation: 'Target role highly values AWS or Azure experience which is missing.',
+    icon: Cloud,
+    severity: 'High',
+    impact: '+10',
+  },
+  {
+    id: 'w5',
+    title: 'Low keyword coverage',
+    explanation: 'Missing several key requirements from the job description.',
+    icon: Target,
+    severity: 'Critical',
+    impact: '+20',
   },
 ]
 
-const ImpactBadge = ({ level, type }) => {
-  if (type === 'strength') {
+const SeverityBadge = ({ severity, type }) => {
+  const isStrength = type === 'strength'
+  
+  if (isStrength) {
+    const styles = {
+      High: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      Medium: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+    }
     return (
-      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-        level === 'high' ? 'bg-emerald-100 text-emerald-800' : 'bg-emerald-50 text-emerald-600'
-      }`}>
-        {level} Impact
+      <span className={`inline-flex items-center px-2 py-0.5 rounded border text-[10px] font-bold uppercase tracking-wider ${styles[severity] || styles.Medium}`}>
+        {severity} Value
       </span>
     )
   }
 
-  // Weakness severity
   const severityStyles = {
-    critical: 'bg-red-100 text-red-800 border-red-200',
-    high: 'bg-orange-100 text-orange-800 border-orange-200',
-    medium: 'bg-amber-50 text-amber-700 border-amber-200',
+    Critical: 'bg-red-100 text-red-800 border-red-200',
+    High: 'bg-orange-100 text-orange-800 border-orange-200',
+    Medium: 'bg-amber-50 text-amber-700 border-amber-200',
   }
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded border text-[10px] font-bold uppercase tracking-wider ${severityStyles[level]}`}>
-      {level} Priority
+    <span className={`inline-flex items-center px-2 py-0.5 rounded border text-[10px] font-bold uppercase tracking-wider ${severityStyles[severity] || severityStyles.Medium}`}>
+      {severity} Priority
     </span>
   )
 }
@@ -95,12 +136,21 @@ const InsightCard = ({ item, type }) => {
         </div>
       </div>
       
-      <p className="text-sm leading-relaxed text-slate-600">
+      <p className="text-sm leading-relaxed text-slate-600 flex-1">
         {item.explanation}
       </p>
 
-      <div className="mt-auto pt-2">
-        <ImpactBadge level={isStrength ? item.impact : item.severity} type={type} />
+      <div className="mt-2 pt-3 border-t border-slate-100 flex items-center justify-between">
+        <SeverityBadge severity={item.severity} type={type} />
+        
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Est. Impact</span>
+          <span className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-bold border ${
+            isStrength ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-indigo-50 text-indigo-700 border-indigo-100'
+          }`}>
+            {item.impact} Score
+          </span>
+        </div>
       </div>
     </div>
   )
