@@ -8,6 +8,7 @@ import { useResumes } from '../hooks/useResumes'
 import ResumeDropzone from '../components/ResumeDropzone'
 import ScoreBreakdownCard from '../components/ScoreBreakdownCard'
 import KeywordAnalysisSection from '../components/KeywordAnalysisSection'
+import StrengthsWeaknessesSection from '../components/StrengthsWeaknessesSection'
 
 const statusConfig = {
   parsed: { color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle2, label: 'Successfully Parsed' },
@@ -229,23 +230,8 @@ export default function ResumeAnalyzerPage() {
               {/* Keyword Analysis Section */}
               <KeywordAnalysisSection />
 
-              {/* 5. AI Suggestions Section */}
-              <section className="flex flex-col gap-4">
-                <div className="flex items-center gap-2 font-semibold text-slate-900 px-2">
-                  <Sparkles size={20} className="text-sky-500" />
-                  AI Recommendations
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-3xl border border-sky-100 bg-sky-50/50 p-6 shadow-sm">
-                    <h4 className="font-bold text-sky-900">Quantify Impacts</h4>
-                    <p className="mt-2 text-sm leading-relaxed text-sky-800/80">You mentioned "improved performance", but ATS systems score higher when you use numbers. E.g., "Improved performance by 25%".</p>
-                  </div>
-                  <div className="rounded-3xl border border-indigo-100 bg-indigo-50/50 p-6 shadow-sm">
-                    <h4 className="font-bold text-indigo-900">Add Summary Section</h4>
-                    <p className="mt-2 text-sm leading-relaxed text-indigo-800/80">Your resume is missing a professional summary at the top. A 2-3 sentence overview dramatically increases recruiter engagement.</p>
-                  </div>
-                </div>
-              </section>
+              {/* 5. Strengths & Weaknesses Section */}
+              <StrengthsWeaknessesSection />
 
               {/* 6. Resume Actions */}
               <section className="flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-200 pt-8 pb-4">
