@@ -18,7 +18,7 @@ app.add_middleware(FirebaseAuthMiddleware)
 # CORS - allow configure via settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if settings.APP_ENV == 'development' else settings.allowed_origins,
+    allow_origins=["*"] if settings.ENVIRONMENT == 'development' else settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

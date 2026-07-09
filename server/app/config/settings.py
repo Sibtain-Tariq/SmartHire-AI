@@ -12,12 +12,24 @@ class Settings(BaseSettings):
         extra='ignore',
     )
 
-    APP_ENV: str = Field(default='development')
+    ENVIRONMENT: str = Field(default='development')
     APP_DEBUG: bool = Field(default=True)
     APP_HOST: str = Field(default='0.0.0.0')
     APP_PORT: int = Field(default=8000)
+    SECRET_KEY: str = Field(default='super-secret-key-for-dev-only')
 
+    DATABASE_HOST: str = Field(default='localhost')
+    DATABASE_PORT: int = Field(default=5432)
+    DATABASE_NAME: str = Field(default='postgres')
+    DATABASE_USER: str = Field(default='postgres')
+    DATABASE_PASSWORD: str = Field(default='')
     DATABASE_URL: str | None = Field(default=None)
+
+    @property
+    def get_database_url(self) -> str:
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
+        return f"postgresql+asyncpg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
 
     FIREBASE_CREDENTIALS_PATH: str = Field(default='')
 
