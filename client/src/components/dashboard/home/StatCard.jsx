@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { TrendingUp } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const toneClass = {
   sky: 'from-sky-500/12 to-cyan-400/12 text-sky-600',
@@ -11,15 +12,17 @@ const toneClass = {
 
 export default function StatCard({ stat, index }) {
   const Icon = stat.icon
+  const navigate = useNavigate()
 
   return (
     <motion.article
+      onClick={() => stat.path && navigate(stat.path)}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.35 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
       whileHover={{ y: -4, scale: 1.01 }}
-      className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-xl hover:shadow-slate-200/70"
+      className={`rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-xl hover:shadow-slate-200/70 ${stat.path ? 'cursor-pointer hover:border-sky-200' : ''}`}
     >
       <div className="flex items-start justify-between gap-4">
         <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${toneClass[stat.tone]}`}>

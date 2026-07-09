@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Plus, SlidersHorizontal, ArrowDownAZ, Loader2, FileX } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 import DashboardLayout from '../../../components/dashboard/DashboardLayout'
 import DashboardContainer from '../../../components/dashboard/DashboardContainer'
 import SectionHeader from '../../../components/dashboard/home/SectionHeader'
@@ -29,6 +30,32 @@ export default function ResumeDashboard() {
   // State for overlays
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [selectedResume, setSelectedResume] = useState(null)
+  
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  useEffect(() => {
+    // Check if URL indicates upload action
+    if (searchParams.get('action') === 'upload') {
+      setIsUploadModalOpen(true)
+      // Clean up URL state without triggering a reload
+      searchParams.delete('action')
+      setSearchParams(searchParams, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
+
+  useEffect(() => {
+    // Check if URL specifies a resume to open
+    const id = searchParams.get('id')
+    if (id && resumes.length > 0) {
+      const resume = resumes.find(r => r.id === id)
+      if (resume) {
+        setSelectedResume(resume)
+      }
+      // Clean up URL state
+      searchParams.delete('id')
+      setSearchParams(searchParams, { replace: true })
+    }
+  }, [searchParams, setSearchParams, resumes])
 
   const handleUploadComplete = (file, isSuccess) => {
     if (isSuccess) {

@@ -31,6 +31,7 @@ export const overviewStats = [
     trend: '+8% this month',
     icon: BarChart3,
     tone: 'sky',
+    path: '/resume',
   },
   {
     label: 'Total Resumes',
@@ -39,6 +40,7 @@ export const overviewStats = [
     trend: '+1 new version',
     icon: FileText,
     tone: 'indigo',
+    path: '/resume',
   },
   {
     label: 'Interviews Completed',
@@ -47,6 +49,7 @@ export const overviewStats = [
     trend: '+3 this week',
     icon: MessageSquare,
     tone: 'emerald',
+    path: '/interviews',
   },
   {
     label: 'Job Matches',
@@ -55,6 +58,7 @@ export const overviewStats = [
     trend: '+6 strong matches',
     icon: Briefcase,
     tone: 'amber',
+    path: '/job-matching',
   },
 ]
 
@@ -63,31 +67,31 @@ export const quickActions = [
     title: 'Upload Resume',
     description: 'Add a new resume version for future analysis.',
     icon: UploadCloud,
+    path: '/resume?action=upload',
   },
   {
     title: 'Analyze Resume',
     description: 'Preview readiness, keywords, and formatting signals.',
     icon: FileSearch,
+    path: '/resume',
   },
   {
     title: 'Compare with Job Description',
     description: 'Check alignment against a target role.',
     icon: Target,
+    path: '/job-matching',
   },
   {
     title: 'Start Mock Interview',
     description: 'Practice role-specific questions with guided feedback.',
     icon: BrainCircuit,
-  },
-  {
-    title: 'View Reports',
-    description: 'Review recent ATS and preparation summaries.',
-    icon: BarChart3,
+    path: '/interviews',
   },
   {
     title: 'Update Profile',
     description: 'Keep your professional details fresh.',
     icon: User,
+    path: '/profile',
   },
 ]
 

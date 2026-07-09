@@ -1,13 +1,16 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export default function QuickActionCard({ action, index }) {
   const Icon = action.icon
+  const navigate = useNavigate()
 
   return (
     <motion.button
       type="button"
+      onClick={() => action.path && navigate(action.path)}
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
