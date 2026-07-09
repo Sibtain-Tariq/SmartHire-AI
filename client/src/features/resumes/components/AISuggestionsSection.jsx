@@ -16,9 +16,9 @@ const suggestionsMock = [
   {
     id: 'sug2',
     title: 'Add cloud technologies relevant to your target role',
-    description: 'Your target roles frequently mention AWS, Docker, and Kubernetes. While you have strong backend experience, explicitly listing these cloud technologies in your skills section will help bypass strict ATS keyword filters.',
+    description: 'Add AWS, Docker and Kubernetes to your skills section. Your target roles frequently mention these technologies, and explicitly listing them will help bypass strict ATS keyword filters.',
     priority: 'High',
-    impact: '+5',
+    impact: '+7',
     category: 'Skills',
     difficulty: 'Easy',
     icon: Zap
