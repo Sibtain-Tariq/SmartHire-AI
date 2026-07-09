@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import SectionShell from './SectionShell'
 
@@ -19,10 +20,10 @@ export default function CTASection() {
               Let’s create a recruiting experience that feels effortless for your team and memorable for every candidate.
             </p>
           </div>
-          <a href="#pricing" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5">
-            View pricing plans
+          <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5">
+            Sign up
             <ArrowRight size={16} />
-          </a>
+          </Link>
         </div>
       </div>
     </SectionShell>

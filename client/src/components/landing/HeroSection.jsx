@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Play, Sparkles, ShieldCheck, Bot } from 'lucide-react'
 
@@ -23,10 +24,10 @@ export default function HeroSection() {
             From job descriptions to interviews, SmartHire AI transforms recruiting into a calm, data-rich workflow that helps teams move from first review to offer in days, not weeks.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="#contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700">
+            <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700">
               Start hiring smarter
               <ArrowRight size={16} />
-            </a>
+            </Link>
             <a href="#ats" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white/80 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-white">
               <Play size={16} />
               Watch the demo
