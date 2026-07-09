@@ -12,6 +12,7 @@ import ATSReadinessChecklist from '../components/ATSReadinessChecklist'
 import SectionAnalysis from '../components/SectionAnalysis'
 import KeywordAnalysisSection from '../components/KeywordAnalysisSection'
 import StrengthsWeaknessesSection from '../components/StrengthsWeaknessesSection'
+import ImprovementRoadmap from '../components/ImprovementRoadmap'
 import AISuggestionsSection from '../components/AISuggestionsSection'
 import ResumeActionCenter from '../components/ResumeActionCenter'
 
@@ -212,6 +213,9 @@ export default function ResumeAnalyzerPage() {
 
               {/* 5. Strengths & Weaknesses Section */}
               <StrengthsWeaknessesSection />
+
+              {/* Improvement Roadmap */}
+              <ImprovementRoadmap />
 
               {/* 6. AI Suggestions Section */}
               <AISuggestionsSection />
