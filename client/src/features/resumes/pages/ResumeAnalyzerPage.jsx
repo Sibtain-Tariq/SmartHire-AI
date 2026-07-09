@@ -10,6 +10,7 @@ import ScoreBreakdownCard from '../components/ScoreBreakdownCard'
 import KeywordAnalysisSection from '../components/KeywordAnalysisSection'
 import StrengthsWeaknessesSection from '../components/StrengthsWeaknessesSection'
 import AISuggestionsSection from '../components/AISuggestionsSection'
+import ResumeActionCenter from '../components/ResumeActionCenter'
 
 const statusConfig = {
   parsed: { color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle2, label: 'Successfully Parsed' },
@@ -238,20 +239,7 @@ export default function ResumeAnalyzerPage() {
               <AISuggestionsSection />
 
               {/* 7. Resume Actions */}
-              <section className="flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-200 pt-8 pb-4">
-                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900">
-                  <Trash2 size={18} />
-                  Delete Resume
-                </button>
-                <button disabled className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-6 py-3 text-sm font-semibold text-slate-400 cursor-not-allowed">
-                  <Download size={18} />
-                  Download Report
-                </button>
-                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">
-                  <BarChart3 size={18} />
-                  Analyze Again
-                </button>
-              </section>
+              <ResumeActionCenter onReplace={handleReplace} onRemove={handleRemove} />
 
             </motion.div>
           )}
