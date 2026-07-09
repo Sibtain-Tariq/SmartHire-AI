@@ -7,6 +7,7 @@ import DashboardContainer from '../../../components/dashboard/DashboardContainer
 import { useResumes } from '../hooks/useResumes'
 import ResumeDropzone from '../components/ResumeDropzone'
 import ScoreBreakdownCard from '../components/ScoreBreakdownCard'
+import KeywordAnalysisSection from '../components/KeywordAnalysisSection'
 
 const statusConfig = {
   parsed: { color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle2, label: 'Successfully Parsed' },
@@ -224,6 +225,9 @@ export default function ResumeAnalyzerPage() {
                   />
                 </div>
               </section>
+
+              {/* Keyword Analysis Section */}
+              <KeywordAnalysisSection />
 
               {/* 5. AI Suggestions Section */}
               <section className="flex flex-col gap-4">
