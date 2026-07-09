@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../../../lib/firebase'
 import { authService } from '../services/authService'
@@ -46,30 +46,30 @@ export function AuthProvider({ children }) {
     return () => unsubscribe()
   }, [])
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     const result = await authService.login(email, password)
     if (result.error) throw new Error(result.error)
     return result.user
-  }
+  }, [])
 
-  const register = async (name, email, password) => {
+  const register = useCallback(async (name, email, password) => {
     const result = await authService.register(name, email, password)
     if (result.error) throw new Error(result.error)
     return result.user
-  }
+  }, [])
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     const result = await authService.logout()
     if (result.error) throw new Error(result.error)
     setUser(null)
-  }
+  }, [])
   
-  const resetPassword = async (email) => {
+  const resetPassword = useCallback(async (email) => {
     const result = await authService.resetPassword(email)
     if (result.error) throw new Error(result.error)
-  }
+  }, [])
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     loading,
     isAuthenticated: !!user,
@@ -78,7 +78,7 @@ export function AuthProvider({ children }) {
     register,
     logout,
     resetPassword
-  }
+  }), [user, loading, login, register, logout, resetPassword])
 
   // Show a loading screen while authentication state initializes
   if (loading) {

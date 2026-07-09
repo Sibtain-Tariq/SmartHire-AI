@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { lazy } from 'react'
 import { Route } from 'react-router-dom'
-import DashboardPage from '../pages/DashboardPage'
-import LoginPage from '../features/auth/pages/LoginPage'
-import RegisterPage from '../features/auth/pages/RegisterPage'
-import ForgotPasswordPage from '../features/auth/pages/ForgotPasswordPage'
-import ResetPasswordPage from '../features/auth/pages/ResetPasswordPage'
 import ProtectedRoute from '../features/auth/components/ProtectedRoute'
 import PublicRoute from '../features/auth/components/PublicRoute'
+
+const DashboardPage = lazy(() => import('../pages/DashboardPage'))
+const LoginPage = lazy(() => import('../features/auth/pages/LoginPage'))
+const RegisterPage = lazy(() => import('../features/auth/pages/RegisterPage'))
+const ForgotPasswordPage = lazy(() => import('../features/auth/pages/ForgotPasswordPage'))
+const ResetPasswordPage = lazy(() => import('../features/auth/pages/ResetPasswordPage'))
 
 export default function AppRoutes() {
   return (
