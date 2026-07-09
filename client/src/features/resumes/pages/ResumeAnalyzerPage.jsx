@@ -13,6 +13,13 @@ const statusConfig = {
   needs_review: { color: 'text-amber-600', bg: 'bg-amber-50', icon: AlertCircle, label: 'Requires Manual Review' },
 }
 
+const getScoreStatus = (score) => {
+  if (score >= 90) return { label: 'Excellent', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' }
+  if (score >= 75) return { label: 'Good', color: 'text-sky-700', bg: 'bg-sky-50', border: 'border-sky-200' }
+  if (score >= 60) return { label: 'Needs Improvement', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' }
+  return { label: 'Poor', color: 'text-red-700', bg: 'bg-red-50', border: 'border-red-200' }
+}
+
 export default function ResumeAnalyzerPage() {
   const { resumes } = useResumes()
   
@@ -124,18 +131,55 @@ export default function ResumeAnalyzerPage() {
               <section className="grid gap-6 md:grid-cols-2">
                 {/* Overall Score */}
                 <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <div className="flex items-center gap-2 font-semibold text-slate-900">
-                    <BarChart3 size={20} className="text-sky-500" />
-                    Overall ATS Score
-                  </div>
-                  <div className="mt-8 flex flex-col items-center justify-center">
-                    <div className="relative flex h-32 w-32 items-center justify-center rounded-full border-8 border-emerald-100">
-                      <svg className="absolute inset-0 h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="46" fill="transparent" stroke="currentColor" strokeWidth="8" className="text-emerald-500" strokeDasharray={`${activeResume.ats_score * 2.89} 289`} />
-                      </svg>
-                      <span className="text-4xl font-black tracking-tight text-slate-900">{activeResume.ats_score}%</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 font-semibold text-slate-900">
+                      <BarChart3 size={20} className="text-sky-500" />
+                      Overall ATS Score
                     </div>
-                    <p className="mt-6 text-center text-sm font-medium text-slate-500">Your resume is highly optimized, but there is room for keyword improvement.</p>
+                    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${getScoreStatus(activeResume.ats_score).bg} ${getScoreStatus(activeResume.ats_score).color} ${getScoreStatus(activeResume.ats_score).border}`}>
+                      {getScoreStatus(activeResume.ats_score).label}
+                    </span>
+                  </div>
+
+                  <div className="mt-8 flex flex-col items-center justify-center">
+                    <div className="relative flex h-36 w-36 items-center justify-center rounded-full border-8 border-slate-50 shadow-inner">
+                      <svg className="absolute inset-0 h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="46" fill="transparent" stroke="currentColor" strokeWidth="8" className="text-slate-100" />
+                        <circle cx="50" cy="50" r="46" fill="transparent" stroke="currentColor" strokeWidth="8" className={getScoreStatus(activeResume.ats_score).color.replace('text-', 'text-').replace('-700', '-500')} strokeDasharray={`${activeResume.ats_score * 2.89} 289`} />
+                      </svg>
+                      <div className="flex flex-col items-center">
+                        <span className="text-4xl font-black tracking-tight text-slate-900">{activeResume.ats_score}</span>
+                        <span className="text-xs font-medium text-slate-400">/ 100</span>
+                      </div>
+                    </div>
+                    <p className="mt-6 text-center text-sm font-medium text-slate-500 max-w-xs">
+                      Your resume is well optimized for Applicant Tracking Systems, but there are several improvements that could increase your interview chances.
+                    </p>
+                  </div>
+
+                  {/* Mock Metrics */}
+                  <div className="mt-8 grid grid-cols-3 gap-2 border-t border-slate-100 pt-6">
+                    <div className="flex flex-col items-center text-center">
+                      <span className="text-lg font-bold text-slate-900">89%</span>
+                      <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Compatibility</span>
+                    </div>
+                    <div className="flex flex-col items-center text-center border-x border-slate-100">
+                      <span className="text-lg font-bold text-slate-900">82%</span>
+                      <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Optimization</span>
+                    </div>
+                    <div className="flex flex-col items-center text-center">
+                      <span className="text-lg font-bold text-slate-900">95%</span>
+                      <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Readability</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
+                    <span className="text-xs font-medium text-slate-400">
+                      Last Analyzed: {new Date(activeResume.updated_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </span>
+                    <button disabled className="text-xs font-semibold text-slate-400 cursor-not-allowed">
+                      Analyze Again
+                    </button>
                   </div>
                 </div>
 
