@@ -7,14 +7,10 @@ import PartnersSection from '../components/landing/PartnersSection'
 import FeaturesSection from '../components/landing/FeaturesSection'
 import ATSDemoSection from '../components/landing/ATSDemoSection'
 import InterviewDemoSection from '../components/landing/InterviewDemoSection'
-import WorkflowSection from '../components/landing/WorkflowSection'
-import WhyChooseSection from '../components/landing/WhyChooseSection'
 import TestimonialsSection from '../components/landing/TestimonialsSection'
 import PricingSection from '../components/landing/PricingSection'
 import FAQSection from '../components/landing/FAQSection'
 import CTASection from '../components/landing/CTASection'
-import NewsletterSection from '../components/landing/NewsletterSection'
-import ContactSection from '../components/landing/ContactSection'
 import Footer from '../components/landing/Footer'
 
 export default function LandingPage() {
@@ -32,14 +28,10 @@ export default function LandingPage() {
       <FeaturesSection />
       <ATSDemoSection />
       <InterviewDemoSection />
-      <WorkflowSection />
-      <WhyChooseSection />
       <TestimonialsSection />
       <PricingSection />
       <FAQSection />
       <CTASection />
-      <NewsletterSection />
-      <ContactSection />
       <Footer />
     </motion.div>
   )

@@ -19,8 +19,8 @@ export default function CTASection() {
               Let’s create a recruiting experience that feels effortless for your team and memorable for every candidate.
             </p>
           </div>
-          <a href="#contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5">
-            Request a private walkthrough
+          <a href="#pricing" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5">
+            View pricing plans
             <ArrowRight size={16} />
           </a>
         </div>
