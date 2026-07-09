@@ -20,3 +20,6 @@ class Resume(UUIDMixin, TimestampMixin, Base):
     
     # One-to-One relationship with the ATS Report
     ats_report = relationship("ATSReport", back_populates="resume", uselist=False, cascade="all, delete-orphan")
+
+    # Relationship to Interview Sessions
+    interview_sessions = relationship("InterviewSession", back_populates="resume")

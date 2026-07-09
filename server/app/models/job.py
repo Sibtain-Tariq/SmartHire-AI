@@ -28,3 +28,6 @@ class Job(UUIDMixin, TimestampMixin, Base):
 
     # Relationship back to User
     user = relationship("User", back_populates="jobs")
+
+    # Relationship to Interview Sessions
+    interview_sessions = relationship("InterviewSession", back_populates="job")
