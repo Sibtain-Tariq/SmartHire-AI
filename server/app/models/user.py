@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, DateTime
+from sqlalchemy.orm import relationship
 from app.database.base import Base
 from app.models.mixins import UUIDMixin, TimestampMixin
 
@@ -13,3 +14,6 @@ class User(UUIDMixin, TimestampMixin, Base):
     role = Column(String(50), default="user")
     
     last_login = Column(DateTime(timezone=True), nullable=True)
+
+    # Relationships
+    resumes = relationship("Resume", back_populates="user", cascade="all, delete-orphan")
