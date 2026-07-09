@@ -6,6 +6,7 @@ import DashboardLayout from '../../../components/dashboard/DashboardLayout'
 import DashboardContainer from '../../../components/dashboard/DashboardContainer'
 import { useResumes } from '../hooks/useResumes'
 import ResumeDropzone from '../components/ResumeDropzone'
+import ScoreBreakdownCard from '../components/ScoreBreakdownCard'
 
 const statusConfig = {
   parsed: { color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle2, label: 'Successfully Parsed' },
@@ -128,9 +129,9 @@ export default function ResumeAnalyzerPage() {
               </section>
 
               {/* 4. ATS Analysis Section */}
-              <section className="grid gap-6 md:grid-cols-2">
+              <section className="flex flex-col gap-6">
                 {/* Overall Score */}
-                <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm w-full">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 font-semibold text-slate-900">
                       <BarChart3 size={20} className="text-sky-500" />
@@ -152,7 +153,7 @@ export default function ResumeAnalyzerPage() {
                         <span className="text-xs font-medium text-slate-400">/ 100</span>
                       </div>
                     </div>
-                    <p className="mt-6 text-center text-sm font-medium text-slate-500 max-w-xs">
+                    <p className="mt-6 text-center text-sm font-medium text-slate-500 max-w-sm">
                       Your resume is well optimized for Applicant Tracking Systems, but there are several improvements that could increase your interview chances.
                     </p>
                   </div>
@@ -183,48 +184,44 @@ export default function ResumeAnalyzerPage() {
                   </div>
                 </div>
 
-                {/* Section Scores & Keywords */}
-                <div className="flex flex-col gap-6">
-                  <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm flex-1">
-                    <div className="flex items-center gap-2 font-semibold text-slate-900 mb-4">
-                      <Target size={20} className="text-indigo-500" />
-                      Formatting & Sections
-                    </div>
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex justify-between text-sm font-medium mb-1"><span className="text-slate-700">Contact Info</span><span className="text-emerald-600">100%</span></div>
-                        <div className="h-2 w-full rounded-full bg-slate-100"><div className="h-full bg-emerald-500 rounded-full" style={{ width: '100%' }} /></div>
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-sm font-medium mb-1"><span className="text-slate-700">Experience</span><span className="text-emerald-600">90%</span></div>
-                        <div className="h-2 w-full rounded-full bg-slate-100"><div className="h-full bg-emerald-500 rounded-full" style={{ width: '90%' }} /></div>
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-sm font-medium mb-1"><span className="text-slate-700">Education</span><span className="text-amber-500">60%</span></div>
-                        <div className="h-2 w-full rounded-full bg-slate-100"><div className="h-full bg-amber-500 rounded-full" style={{ width: '60%' }} /></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2 font-semibold text-slate-900">
-                        <CheckCircle2 size={20} className="text-teal-500" />
-                        Keyword Match
-                      </div>
-                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Top Skills</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {activeResume.tags.map(tag => (
-                        <span key={tag} className="inline-flex rounded-xl bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700">
-                          {tag}
-                        </span>
-                      ))}
-                      <span className="inline-flex rounded-xl bg-red-50 border border-red-100 px-3 py-1.5 text-sm font-medium text-red-700">
-                        Missing: GraphQL
-                      </span>
-                    </div>
-                  </div>
+                {/* Score Breakdown Grid */}
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <ScoreBreakdownCard 
+                    title="Keyword Match" 
+                    score={85} 
+                    explanation="Strong alignment with top industry skills and role requirements." 
+                    icon={Target} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Formatting" 
+                    score={92} 
+                    explanation="Formatting is ATS friendly and highly scannable by robots." 
+                    icon={FileText} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Skills" 
+                    score={78} 
+                    explanation="Missing a few highly requested technical skills like GraphQL." 
+                    icon={Sparkles} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Experience" 
+                    score={64} 
+                    explanation="Experience section lacks measurable achievements and action verbs." 
+                    icon={Building2} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Education" 
+                    score={100} 
+                    explanation="Education details are perfectly formatted and easily detected." 
+                    icon={CheckCircle2} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Readability" 
+                    score={95} 
+                    explanation="Professional tone with excellent grammar and sentence structure." 
+                    icon={FileText} 
+                  />
                 </div>
               </section>
 
