@@ -38,15 +38,17 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* TODO: Revert to /login when authentication is re-enabled */}
           <Link
-            to="/login"
+            to="/dashboard"
             className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
           >
             Login
             <LogIn size={16} />
           </Link>
+          {/* TODO: Revert to /register when authentication is re-enabled */}
           <Link
-            to="/register"
+            to="/dashboard"
             className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 sm:inline-flex"
           >
             Sign up

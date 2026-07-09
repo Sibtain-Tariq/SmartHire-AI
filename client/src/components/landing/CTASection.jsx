@@ -20,7 +20,8 @@ export default function CTASection() {
               Let’s create a recruiting experience that feels effortless for your team and memorable for every candidate.
             </p>
           </div>
-          <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5">
+          {/* TODO: Revert to /register when authentication is re-enabled */}
+          <Link to="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5">
             Sign up
             <ArrowRight size={16} />
           </Link>
