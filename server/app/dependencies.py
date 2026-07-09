@@ -1,5 +1,5 @@
 from typing import AsyncGenerator
-from app.database.connection import get_db
+from app.database.session import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Request, HTTPException, status
 

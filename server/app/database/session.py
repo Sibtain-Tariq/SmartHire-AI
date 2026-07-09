@@ -1,22 +1,11 @@
 from typing import AsyncGenerator
-
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
+from app.database.database import engine
 
-from app.config.settings import settings
-
-DATABASE_URL = settings.get_database_url
-
-engine: AsyncEngine | None = None
 AsyncSessionLocal = None
 
-if DATABASE_URL:
-    engine = create_async_engine(
-        DATABASE_URL,
-        echo=(settings.ENVIRONMENT == 'development'),
-        future=True,
-        pool_pre_ping=True,
-    )
+if engine:
     AsyncSessionLocal = sessionmaker(
         bind=engine,
         class_=AsyncSession,
@@ -25,8 +14,11 @@ if DATABASE_URL:
         autocommit=False,
     )
 
-
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    """
+    Creates and yields a new database session.
+    Ensures the session is safely closed after use.
+    """
     if AsyncSessionLocal is None:
         raise RuntimeError('Database is not configured. Set database connection variables to enable database sessions.')
 
