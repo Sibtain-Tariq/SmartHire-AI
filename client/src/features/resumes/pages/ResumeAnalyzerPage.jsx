@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FileText, CheckCircle2, AlertCircle, Clock, BarChart3, Target, Sparkles, Building2, Trash2, RefreshCw } from 'lucide-react'
+import { FileText, CheckCircle2, AlertCircle, Clock, BarChart3, Target, Sparkles, Building2, Trash2, RefreshCw, Type, Layers } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import DashboardLayout from '../../../components/dashboard/DashboardLayout'
 import DashboardContainer from '../../../components/dashboard/DashboardContainer'
@@ -141,42 +141,62 @@ export default function ResumeAnalyzerPage() {
                 <ResumeHealthScore resume={activeResume} />
 
                 {/* Score Breakdown Grid */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <ScoreBreakdownCard 
                     title="Keyword Match" 
                     score={85} 
                     explanation="Strong alignment with top industry skills and role requirements." 
+                    impact="+8"
                     icon={Target} 
                   />
                   <ScoreBreakdownCard 
                     title="Formatting" 
                     score={92} 
                     explanation="Formatting is ATS friendly and highly scannable by robots." 
+                    impact="+2"
                     icon={FileText} 
                   />
                   <ScoreBreakdownCard 
                     title="Skills" 
                     score={78} 
                     explanation="Missing a few highly requested technical skills like GraphQL." 
+                    impact="+5"
                     icon={Sparkles} 
                   />
                   <ScoreBreakdownCard 
                     title="Experience" 
                     score={64} 
                     explanation="Experience section lacks measurable achievements and action verbs." 
+                    impact="+12"
                     icon={Building2} 
                   />
                   <ScoreBreakdownCard 
                     title="Education" 
                     score={100} 
                     explanation="Education details are perfectly formatted and easily detected." 
+                    impact="+0"
                     icon={CheckCircle2} 
                   />
                   <ScoreBreakdownCard 
                     title="Readability" 
                     score={95} 
                     explanation="Professional tone with excellent grammar and sentence structure." 
+                    impact="+1"
                     icon={FileText} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Grammar" 
+                    score={88} 
+                    explanation="A few minor typo warnings detected, but largely error-free." 
+                    impact="+2"
+                    icon={Type} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Section Organization" 
+                    score={70} 
+                    explanation="Standard sections used, but they are ordered poorly for your experience level." 
+                    impact="+4"
+                    icon={Layers} 
                   />
                 </div>
               </section>

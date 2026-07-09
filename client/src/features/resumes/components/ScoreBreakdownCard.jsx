@@ -8,7 +8,7 @@ const getStatusConfig = (score) => {
   return { label: 'Poor', color: 'text-red-700', bg: 'bg-red-50', bar: 'bg-red-500', icon: ShieldAlert }
 }
 
-export default function ScoreBreakdownCard({ title, score, explanation, icon: Icon, isLoading, isEmpty }) {
+export default function ScoreBreakdownCard({ title, score, explanation, impact, icon: Icon, isLoading, isEmpty }) {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm animate-pulse">
@@ -72,9 +72,18 @@ export default function ScoreBreakdownCard({ title, score, explanation, icon: Ic
         />
       </div>
 
-      <p className="mt-1 text-sm font-medium text-slate-500 leading-relaxed">
+      <p className="mt-1 text-sm font-medium text-slate-500 leading-relaxed flex-1">
         {explanation}
       </p>
+
+      {impact && (
+        <div className="mt-2 pt-3 border-t border-slate-100 flex items-center justify-between">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Est. Impact</span>
+          <span className="inline-flex items-center rounded bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700 border border-indigo-100">
+            {impact} ATS Score
+          </span>
+        </div>
+      )}
     </div>
   )
 }
