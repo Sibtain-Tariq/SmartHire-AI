@@ -1,39 +1,5 @@
-import { FileText, Star, Clock, CheckCircle } from 'lucide-react'
+import { FileText } from 'lucide-react'
 
-export const resumeStats = [
-  {
-    label: 'Total Resumes',
-    value: '12',
-    trend: '+2 this week',
-    description: 'Active documents in your library.',
-    icon: FileText,
-    tone: 'sky',
-  },
-  {
-    label: 'Avg. ATS Score',
-    value: '84%',
-    trend: '+5% improvement',
-    description: 'Average match rate across all resumes.',
-    icon: CheckCircle,
-    tone: 'emerald',
-  },
-  {
-    label: 'Best Performer',
-    value: '92%',
-    trend: 'Senior React Dev',
-    description: 'Highest scoring resume so far.',
-    icon: Star,
-    tone: 'amber',
-  },
-  {
-    label: 'Last Updated',
-    value: '2h ago',
-    trend: 'Recent activity',
-    description: 'Most recent change made to your library.',
-    icon: Clock,
-    tone: 'indigo',
-  },
-]
 
 export const mockResumesList = [
   {

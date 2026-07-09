@@ -31,7 +31,7 @@ export const overviewStats = [
     trend: '+8% this month',
     icon: BarChart3,
     tone: 'sky',
-    path: '/resume',
+    path: '/resume-analyzer',
   },
   {
     label: 'Total Resumes',
@@ -40,7 +40,7 @@ export const overviewStats = [
     trend: '+1 new version',
     icon: FileText,
     tone: 'indigo',
-    path: '/resume',
+    path: '/resume-analyzer',
   },
   {
     label: 'Interviews Completed',
@@ -67,13 +67,13 @@ export const quickActions = [
     title: 'Upload Resume',
     description: 'Add a new resume version for future analysis.',
     icon: UploadCloud,
-    path: '/resume?action=upload',
+    path: '/resume-analyzer?action=upload',
   },
   {
     title: 'Analyze Resume',
     description: 'Preview readiness, keywords, and formatting signals.',
     icon: FileSearch,
-    path: '/resume',
+    path: '/resume-analyzer',
   },
   {
     title: 'Compare with Job Description',

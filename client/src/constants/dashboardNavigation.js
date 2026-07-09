@@ -12,8 +12,7 @@ import {
 
 export const dashboardNavigation = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { label: 'Resume', path: '/resume', icon: ScrollText },
-  { label: 'ATS Reports', path: '/ats', icon: FileSearch },
+  { label: 'Resume Analyzer', path: '/resume-analyzer', icon: ScrollText },
   { label: 'Job Matching', path: '/job-matching', icon: Sparkles },
   { label: 'Interview Prep', path: '/interviews', icon: MessageSquare },
   { label: 'Profile', path: '/profile', icon: User },

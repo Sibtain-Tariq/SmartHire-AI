@@ -10,7 +10,7 @@ const ForgotPasswordPage = lazy(() => import('../features/auth/pages/ForgotPassw
 const ResetPasswordPage = lazy(() => import('../features/auth/pages/ResetPasswordPage'))
 
 // Resume Module Routes
-const ResumeDashboard = lazy(() => import('../features/resumes/pages/ResumeDashboard'))
+const ResumeAnalyzerPage = lazy(() => import('../features/resumes/pages/ResumeAnalyzerPage'))
 
 export default function AppRoutes() {
   return (
@@ -27,10 +27,9 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         
-        {/* Resume Management */}
-        <Route path="/resume" element={<ResumeDashboard />} />
+        {/* Resume Analyzer */}
+        <Route path="/resume-analyzer" element={<ResumeAnalyzerPage />} />
 
-        <Route path="/ats" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">ATS Placeholder</div>} />
         <Route path="/interviews" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Interviews Placeholder</div>} />
         <Route path="/profile" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Profile Placeholder</div>} />
       </Route>
