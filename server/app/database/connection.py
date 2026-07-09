@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.config.settings import settings
 
-DATABASE_URL = settings.DATABASE_URL
+DATABASE_URL = settings.get_database_url
 
 engine: AsyncEngine | None = None
 AsyncSessionLocal = None
@@ -13,7 +13,7 @@ AsyncSessionLocal = None
 if DATABASE_URL:
     engine = create_async_engine(
         DATABASE_URL,
-        echo=False,
+        echo=(settings.ENVIRONMENT == 'development'),
         future=True,
         pool_pre_ping=True,
     )
@@ -28,7 +28,10 @@ if DATABASE_URL:
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     if AsyncSessionLocal is None:
-        raise RuntimeError('Database is not configured. Set DATABASE_URL to enable database sessions.')
+        raise RuntimeError('Database is not configured. Set database connection variables to enable database sessions.')
 
     async with AsyncSessionLocal() as session:
-        yield session
+        try:
+            yield session
+        finally:
+            await session.close()
