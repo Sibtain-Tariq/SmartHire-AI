@@ -8,7 +8,6 @@ import ComingSoonSection from '../components/dashboard/home/ComingSoonSection'
 import DashboardHero from '../components/dashboard/home/DashboardHero'
 import InterviewProgressCard from '../components/dashboard/home/InterviewProgressCard'
 import QuickActionCard from '../components/dashboard/home/QuickActionCard'
-import RecentReportsTable from '../components/dashboard/home/RecentReportsTable'
 import RecommendationCard from '../components/dashboard/home/RecommendationCard'
 import ResumeSummaryCard from '../components/dashboard/home/ResumeSummaryCard'
 import SectionHeader from '../components/dashboard/home/SectionHeader'
@@ -25,25 +24,7 @@ export default function DashboardPage() {
       <DashboardContainer className="gap-8">
         <DashboardHero />
 
-        <motion.section
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.32, delay: 0.06 }}
-          aria-labelledby="overview-statistics"
-        >
-          <SectionHeader
-            id="overview-statistics"
-            eyebrow="Overview"
-            title="Preparation statistics"
-            description="A quick snapshot of resume readiness, practice activity, and matching momentum."
-          />
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {overviewStats.map((stat, index) => (
-              <StatCard key={stat.label} stat={stat} index={index} />
-            ))}
-          </div>
-        </motion.section>
-
+        {/* Quick Actions (Moved up) */}
         <section aria-labelledby="quick-actions">
           <SectionHeader
             id="quick-actions"
@@ -57,6 +38,20 @@ export default function DashboardPage() {
             ))}
           </div>
         </section>
+
+        {/* Statistics Cards (Moved below Quick Actions, Overview Header Removed) */}
+        <motion.section
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.32, delay: 0.06 }}
+          aria-labelledby="statistics-cards"
+        >
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {overviewStats.map((stat, index) => (
+              <StatCard key={stat.label} stat={stat} index={index} />
+            ))}
+          </div>
+        </motion.section>
 
         <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]" aria-label="Resume and ATS summaries">
           <ResumeSummaryCard />
@@ -83,16 +78,6 @@ export default function DashboardPage() {
               <RecommendationCard key={recommendation.title} recommendation={recommendation} />
             ))}
           </div>
-        </section>
-
-        <section aria-labelledby="recent-reports">
-          <SectionHeader
-            id="recent-reports"
-            eyebrow="Reports"
-            title="Recent reports"
-            description="A lightweight report table designed for future ATS and interview outputs."
-          />
-          <RecentReportsTable />
         </section>
 
         <section aria-labelledby="coming-soon">

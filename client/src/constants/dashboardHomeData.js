@@ -6,8 +6,6 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
-  Download,
-  Eye,
   FileSearch,
   FileText,
   MessageSquare,
@@ -186,27 +184,6 @@ export const recommendations = [
   },
 ]
 
-export const recentReports = [
-  {
-    name: 'Frontend Engineer ATS Review',
-    date: 'Jul 7, 2026',
-    score: 86,
-    status: 'Ready',
-  },
-  {
-    name: 'Product UI Resume Match',
-    date: 'Jul 5, 2026',
-    score: 79,
-    status: 'Needs Review',
-  },
-  {
-    name: 'React Architect Interview Prep',
-    date: 'Jul 3, 2026',
-    score: 91,
-    status: 'Strong',
-  },
-]
-
 export const upcomingFeatures = [
   { title: 'AI Resume Builder', icon: Sparkles },
   { title: 'Cover Letter Generator', icon: FileText },
@@ -214,11 +191,6 @@ export const upcomingFeatures = [
   { title: 'Voice Interview', icon: Activity },
   { title: 'Resume Templates', icon: Calendar },
 ]
-
-export const reportActions = {
-  view: Eye,
-  download: Download,
-}
 
 export const currentFocus = {
   icon: Clock,
