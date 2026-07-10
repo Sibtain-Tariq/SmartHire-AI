@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, MicOff, Pause, Play, Square, Settings, BrainCircuit, Activity, SkipForward, FileText, User } from 'lucide-react';
+import RealTimeFeedbackSection from './RealTimeFeedbackSection';
 
 const STATUS_CONFIG = {
   Waiting: { color: 'text-slate-500', bg: 'bg-slate-100', text: 'Waiting to Start' },
@@ -238,6 +239,10 @@ export default function MockInterviewSimulator({ onEndInterview, config }) {
 
         </div>
       </div>
+
+      {/* Real-time Feedback Section */}
+      <RealTimeFeedbackSection isListening={status === 'Listening'} />
+
     </div>
   );
 }
