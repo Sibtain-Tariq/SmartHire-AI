@@ -4,6 +4,8 @@ import { Settings, User, Shield, Bell, Palette } from 'lucide-react';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import DashboardContainer from '../../../components/dashboard/DashboardContainer';
 import SettingsNavigation from '../components/SettingsNavigation';
+import ProfileSettings from '../components/ProfileSettings';
+import AccountSettings from '../components/AccountSettings';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
@@ -12,7 +14,9 @@ export default function SettingsPage() {
   const renderContent = () => {
     switch (activeTab) {
       case 'profile':
-        return <div className="p-8 text-center text-slate-500">Profile Settings Placeholder</div>;
+        return <ProfileSettings />;
+      case 'account':
+        return <AccountSettings />;
       case 'security':
         return <div className="p-8 text-center text-slate-500">Security Settings Placeholder</div>;
       case 'notifications':

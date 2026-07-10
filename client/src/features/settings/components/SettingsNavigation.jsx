@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User, Shield, Bell, Palette } from 'lucide-react';
+import { User, Shield, Bell, Palette, CreditCard } from 'lucide-react';
 
 const SETTINGS_TABS = [
   { id: 'profile', label: 'Profile', icon: User },
+  { id: 'account', label: 'Account', icon: CreditCard },
   { id: 'security', label: 'Security', icon: Shield },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'appearance', label: 'Appearance', icon: Palette }
