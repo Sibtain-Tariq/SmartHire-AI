@@ -11,6 +11,7 @@ const ResetPasswordPage = lazy(() => import('../features/auth/pages/ResetPasswor
 
 // Resume Module Routes
 const ResumeAnalyzerPage = lazy(() => import('../features/resumes/pages/ResumeAnalyzerPage'))
+const JobMatchPage = lazy(() => import('../features/job-match/pages/JobMatchPage'))
 
 export default function AppRoutes() {
   return (
@@ -29,6 +30,9 @@ export default function AppRoutes() {
         
         {/* Resume Analyzer */}
         <Route path="/resume-analyzer" element={<ResumeAnalyzerPage />} />
+        
+        {/* Job Matching */}
+        <Route path="/job-matching" element={<JobMatchPage />} />
 
         <Route path="/interviews" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Interviews Placeholder</div>} />
         <Route path="/profile" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Profile Placeholder</div>} />
