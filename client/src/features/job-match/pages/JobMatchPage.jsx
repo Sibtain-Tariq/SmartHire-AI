@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import DashboardLayout from '../../../components/dashboard/DashboardLayout'
 import DashboardContainer from '../../../components/dashboard/DashboardContainer'
 import JobMatchInputSection from '../components/JobMatchInputSection'
+import JobMatchHero from '../components/JobMatchHero'
 
 export default function JobMatchPage() {
   const [analysisState, setAnalysisState] = useState('input') // 'input' | 'results'
@@ -66,11 +67,17 @@ export default function JobMatchPage() {
                 </button>
               </div>
 
+              {/* 4. Match Overview / Hero */}
+              <JobMatchHero 
+                matchData={matchData} 
+                onAnalyzeAgain={() => setAnalysisState('input')} 
+              />
+
               {/* Placeholders for future sections */}
-              <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 py-20 px-6 text-center">
+              <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 py-20 px-6 text-center mt-4">
                 <h3 className="text-lg font-bold text-slate-700">Results Engine Pending</h3>
                 <p className="text-sm font-medium text-slate-500 mt-2 max-w-md">
-                  The match overview, score breakdown, and deeper analysis sections will be rendered here.
+                  The match score breakdown and deeper analysis sections will be rendered here.
                 </p>
               </div>
 
