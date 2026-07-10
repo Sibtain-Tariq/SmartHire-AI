@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import DashboardContainer from '../../../components/dashboard/DashboardContainer';
+import InterviewReadinessCard from '../components/InterviewReadinessCard';
 import InterviewPrepInputSection from '../components/InterviewPrepInputSection';
 import InterviewModeSelection from '../components/InterviewModeSelection';
 import InterviewConfigCard from '../components/InterviewConfigCard';
@@ -54,6 +55,7 @@ export default function InterviewPrepPage() {
               exit={{ opacity: 0, scale: 0.98 }}
               className="w-full flex flex-col gap-8"
             >
+              <InterviewReadinessCard />
               <InterviewModeSelection 
                 selectedMode={interviewConfig.mode} 
                 onChange={(mode) => setInterviewConfig({ ...interviewConfig, mode })} 
