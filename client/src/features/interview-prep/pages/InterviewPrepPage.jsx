@@ -10,6 +10,7 @@ import LiveConversationTranscript from '../components/LiveConversationTranscript
 import InterviewFeedbackSection from '../components/InterviewFeedbackSection';
 import InterviewPerformanceDashboard from '../components/InterviewPerformanceDashboard';
 import InterviewImprovementPlan from '../components/InterviewImprovementPlan';
+import InterviewSummaryCard from '../components/InterviewSummaryCard';
 
 export default function InterviewPrepPage() {
   const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active' | 'results'
@@ -84,6 +85,7 @@ export default function InterviewPrepPage() {
               exit={{ opacity: 0, scale: 0.98 }}
               className="w-full flex flex-col gap-8"
             >
+              <InterviewSummaryCard onRetake={() => setSessionState('setup')} />
               <InterviewPerformanceDashboard />
               <InterviewFeedbackSection onRestart={() => setSessionState('setup')} />
               <InterviewImprovementPlan />
