@@ -6,6 +6,7 @@ import DashboardContainer from '../../../components/dashboard/DashboardContainer
 import InterviewPrepInputSection from '../components/InterviewPrepInputSection';
 import InterviewConfigCard from '../components/InterviewConfigCard';
 import AIVoiceInterviewCard from '../components/AIVoiceInterviewCard';
+import LiveConversationTranscript from '../components/LiveConversationTranscript';
 
 export default function InterviewPrepPage() {
   const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active'
@@ -57,12 +58,18 @@ export default function InterviewPrepPage() {
               key="active"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full flex flex-col items-center justify-center min-h-[500px]"
+              className="w-full flex flex-col lg:flex-row gap-8 items-start"
             >
-              <AIVoiceInterviewCard 
-                config={interviewConfig} 
-                onEndInterview={() => setSessionState('setup')} 
-              />
+              <div className="w-full lg:w-1/3 sticky top-8">
+                <AIVoiceInterviewCard 
+                  config={interviewConfig} 
+                  onEndInterview={() => setSessionState('setup')} 
+                />
+              </div>
+              
+              <div className="w-full lg:w-2/3">
+                <LiveConversationTranscript />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
