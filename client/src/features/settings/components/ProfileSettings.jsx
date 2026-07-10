@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Camera, Mail, Phone, MapPin, Briefcase, Award, Building2, User, Edit3, Save, X } from 'lucide-react';
+import { Camera, Mail, Phone, MapPin, Briefcase, Award, Building2, User, Edit3, Save, X, FileText } from 'lucide-react';
 
 const MOCK_PROFILE = {
   fullName: "Alex Morgan",
