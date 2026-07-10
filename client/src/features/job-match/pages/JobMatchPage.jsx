@@ -6,6 +6,11 @@ import DashboardContainer from '../../../components/dashboard/DashboardContainer
 import JobMatchInputSection from '../components/JobMatchInputSection'
 import JobMatchHero from '../components/JobMatchHero'
 import ScoreBreakdownCard from '../../resumes/components/ScoreBreakdownCard'
+import SkillsComparisonSection from '../components/SkillsComparisonSection'
+import RequirementComparisonCards from '../components/RequirementComparisonCards'
+import OptimizationSuggestionsSection from '../components/OptimizationSuggestionsSection'
+import JobMatchReportsSection from '../components/JobMatchReportsSection'
+import JobMatchActionCenter from '../components/JobMatchActionCenter'
 
 export default function JobMatchPage() {
   const [analysisState, setAnalysisState] = useState('input') // 'input' | 'results'
@@ -40,6 +45,9 @@ export default function JobMatchPage() {
             >
               {/* 2 & 3. Resume Selection & JD Input */}
               <JobMatchInputSection onAnalyze={handleAnalyze} />
+
+              {/* Job Match Reports */}
+              <JobMatchReportsSection />
             </motion.section>
           )}
 
@@ -121,12 +129,24 @@ export default function JobMatchPage() {
                 </div>
               </section>
 
-              {/* Placeholders for future sections */}
-              <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 py-20 px-6 text-center mt-4">
-                <h3 className="text-lg font-bold text-slate-700">Results Engine Pending</h3>
-                <p className="text-sm font-medium text-slate-500 mt-2 max-w-md">
-                  The deep analysis sections (Skills, Keywords, Missing Requirements) will be rendered here.
-                </p>
+              {/* Skills Comparison */}
+              <div className="mt-4">
+                <SkillsComparisonSection />
+              </div>
+
+              {/* Requirement Comparison */}
+              <div className="mt-4">
+                <RequirementComparisonCards />
+              </div>
+
+              {/* Optimization Suggestions */}
+              <div className="mt-4">
+                <OptimizationSuggestionsSection />
+              </div>
+
+              {/* Action Center */}
+              <div className="mt-4 mb-8">
+                <JobMatchActionCenter onAnalyzeAgain={() => setAnalysisState('input')} />
               </div>
 
             </motion.div>

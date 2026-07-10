@@ -1,26 +1,62 @@
 import React, { useState, useMemo } from 'react'
-import { CheckCircle2, XCircle, Search, ChevronDown, ChevronUp, AlertCircle, PieChart } from 'lucide-react'
+import { CheckCircle2, XCircle, Search, ChevronDown, ChevronUp, Lightbulb } from 'lucide-react'
 
 const matchedKeywordsMock = [
-  { text: 'Python', level: 'high', category: 'Language' },
-  { text: 'React', level: 'high', category: 'Framework' },
-  { text: 'SQL', level: 'high', category: 'Database' },
-  { text: 'FastAPI', level: 'medium', category: 'Framework' },
-  { text: 'REST APIs', level: 'high', category: 'Concept' },
-  { text: 'Docker', level: 'medium', category: 'Tool' },
-  { text: 'Git', level: 'high', category: 'Tool' },
-  { text: 'Agile', level: 'medium', category: 'Methodology' },
+  { text: 'Python', level: 'High', category: 'Language', badge: 'Expert' },
+  { text: 'React', level: 'High', category: 'Framework', badge: 'Advanced' },
+  { text: 'SQL', level: 'High', category: 'Database', badge: 'Expert' },
+  { text: 'FastAPI', level: 'Medium', category: 'Framework', badge: 'Intermediate' },
+  { text: 'REST APIs', level: 'High', category: 'Concept', badge: 'Expert' },
+  { text: 'Git', level: 'High', category: 'Tool', badge: 'Advanced' },
 ]
 
 const missingKeywordsMock = [
-  { text: 'AWS', category: 'Cloud' },
-  { text: 'CI/CD', category: 'Concept' },
-  { text: 'Kubernetes', category: 'Tool' },
-  { text: 'Leadership', category: 'Soft Skill' },
-  { text: 'Testing', category: 'Practice' },
-  { text: 'Communication', category: 'Soft Skill' },
-  { text: 'Microservices', category: 'Architecture' },
+  { text: 'AWS', level: 'High', category: 'Cloud', badge: 'Required' },
+  { text: 'Docker', level: 'High', category: 'Tool', badge: 'Required' },
+  { text: 'Kubernetes', level: 'Medium', category: 'Tool', badge: 'Preferred' },
+  { text: 'CI/CD', level: 'High', category: 'Concept', badge: 'Required' },
+  { text: 'Leadership', level: 'Medium', category: 'Soft Skill', badge: 'Preferred' },
+  { text: 'Testing', level: 'High', category: 'Practice', badge: 'Required' },
 ]
+
+const suggestedKeywordsMock = [
+  { text: 'Cloud Computing', level: 'Medium', category: 'Concept', badge: 'Bonus' },
+  { text: 'Microservices', level: 'High', category: 'Architecture', badge: 'Trending' },
+  { text: 'Redis', level: 'Medium', category: 'Database', badge: 'Bonus' },
+  { text: 'GraphQL', level: 'Medium', category: 'API', badge: 'Trending' },
+  { text: 'System Design', level: 'High', category: 'Skill', badge: 'Crucial' },
+  { text: 'Communication', level: 'High', category: 'Soft Skill', badge: 'Crucial' },
+]
+
+const KeywordItem = ({ keyword, colorScheme }) => {
+  const baseClasses = "flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition-colors"
+  
+  let colorClasses = ""
+  if (colorScheme === 'matched') {
+    colorClasses = "bg-emerald-50 border-emerald-100 text-emerald-800 hover:bg-emerald-100"
+  } else if (colorScheme === 'missing') {
+    colorClasses = "bg-red-50 border-red-100 text-red-800 hover:bg-red-100"
+  } else {
+    colorClasses = "bg-amber-50 border-amber-100 text-amber-800 hover:bg-amber-100"
+  }
+
+  return (
+    <div className={`${baseClasses} ${colorClasses}`}>
+      <div className="flex flex-col">
+        <span className="font-bold">{keyword.text}</span>
+        <span className="text-[10px] opacity-70 uppercase tracking-wider">Priority: {keyword.level}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="rounded-full bg-white/60 px-2 py-0.5 text-[10px] uppercase tracking-wider border border-white/40 shadow-sm">
+          {keyword.category}
+        </span>
+        <span className="rounded-full bg-slate-900 text-white px-2 py-0.5 text-[10px] uppercase tracking-wider shadow-sm hidden sm:inline-block">
+          {keyword.badge}
+        </span>
+      </div>
+    </div>
+  )
+}
 
 export default function KeywordAnalysisSection() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -36,24 +72,24 @@ export default function KeywordAnalysisSection() {
     return missingKeywordsMock.filter(k => k.text.toLowerCase().includes(searchQuery.toLowerCase()))
   }, [searchQuery])
 
-  // If not expanded, show only top 5 of each (if no search query is active)
-  const displayMatched = (isExpanded || searchQuery) ? filteredMatched : filteredMatched.slice(0, 5)
-  const displayMissing = (isExpanded || searchQuery) ? filteredMissing : filteredMissing.slice(0, 5)
+  const filteredSuggested = useMemo(() => {
+    if (!searchQuery) return suggestedKeywordsMock
+    return suggestedKeywordsMock.filter(k => k.text.toLowerCase().includes(searchQuery.toLowerCase()))
+  }, [searchQuery])
 
-  const hasMore = !searchQuery && (matchedKeywordsMock.length > 5 || missingKeywordsMock.length > 5)
+  // If not expanded, show only top 4 of each (if no search query is active)
+  const displayMatched = (isExpanded || searchQuery) ? filteredMatched : filteredMatched.slice(0, 4)
+  const displayMissing = (isExpanded || searchQuery) ? filteredMissing : filteredMissing.slice(0, 4)
+  const displaySuggested = (isExpanded || searchQuery) ? filteredSuggested : filteredSuggested.slice(0, 4)
 
-  // Density Stats
-  const totalKeywords = matchedKeywordsMock.length + missingKeywordsMock.length
-  const matchedCount = matchedKeywordsMock.length
-  const missingCount = missingKeywordsMock.length
-  const optimizationPercent = Math.round((matchedCount / totalKeywords) * 100)
+  const hasMore = !searchQuery && (matchedKeywordsMock.length > 4 || missingKeywordsMock.length > 4 || suggestedKeywordsMock.length > 4)
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
-        <div className="flex items-center gap-2 font-semibold text-slate-900">
-          <CheckCircle2 size={20} className="text-teal-500" />
-          Keyword Analysis
+        <div className="flex items-center gap-2 font-semibold text-slate-900 text-lg">
+          <CheckCircle2 size={24} className="text-teal-500" />
+          Keyword Gap Analysis
         </div>
         <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
@@ -62,7 +98,7 @@ export default function KeywordAnalysisSection() {
             placeholder="Search keywords..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-4 text-sm text-slate-900 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-shadow"
+            className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-4 text-sm text-slate-900 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-shadow shadow-sm"
           />
         </div>
       </div>
@@ -70,68 +106,43 @@ export default function KeywordAnalysisSection() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Card 1: Matched Keywords */}
         <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-5">
             <h4 className="font-bold text-slate-900 flex items-center gap-2">
               <CheckCircle2 size={18} className="text-emerald-500" />
               Matched Keywords
             </h4>
-            <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600">
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
               {filteredMatched.length} Found
             </span>
           </div>
           
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             {displayMatched.length > 0 ? (
               displayMatched.map(keyword => (
-                <div 
-                  key={keyword.text} 
-                  className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${
-                    keyword.level === 'high' 
-                      ? 'bg-emerald-50 border-emerald-100 text-emerald-700 hover:bg-emerald-100' 
-                      : 'bg-sky-50 border-sky-100 text-sky-700 hover:bg-sky-100'
-                  }`}
-                >
-                  <span>{keyword.text}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="opacity-60 text-[10px] uppercase tracking-wider hidden sm:inline-block">
-                      {keyword.level} match
-                    </span>
-                    <span className="rounded-full bg-white/60 px-2 py-0.5 text-[10px] uppercase tracking-wider border border-white/40">
-                      {keyword.category}
-                    </span>
-                  </div>
-                </div>
+                <KeywordItem key={keyword.text} keyword={keyword} colorScheme="matched" />
               ))
             ) : (
-              <p className="text-sm text-slate-500 italic py-2">No matching keywords found.</p>
+              <p className="text-sm text-slate-500 italic py-2">No matched keywords found.</p>
             )}
           </div>
         </div>
 
         {/* Card 2: Missing Keywords */}
         <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-5">
             <h4 className="font-bold text-slate-900 flex items-center gap-2">
               <XCircle size={18} className="text-red-500" />
               Missing Keywords
             </h4>
-            <span className="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-bold text-red-600">
+            <span className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-600">
               {filteredMissing.length} Missing
             </span>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             {displayMissing.length > 0 ? (
               displayMissing.map(keyword => (
-                <div 
-                  key={keyword.text} 
-                  className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-                >
-                  <span>{keyword.text}</span>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-[10px] uppercase tracking-wider border border-slate-200">
-                    {keyword.category}
-                  </span>
-                </div>
+                <KeywordItem key={keyword.text} keyword={keyword} colorScheme="missing" />
               ))
             ) : (
               <p className="text-sm text-slate-500 italic py-2">No missing keywords found.</p>
@@ -139,48 +150,26 @@ export default function KeywordAnalysisSection() {
           </div>
         </div>
 
-        {/* Card 3: Keyword Density */}
+        {/* Card 3: Suggested Keywords */}
         <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-5">
             <h4 className="font-bold text-slate-900 flex items-center gap-2">
-              <PieChart size={18} className="text-indigo-500" />
-              Keyword Density
+              <Lightbulb size={18} className="text-amber-500" />
+              Suggested Keywords
             </h4>
+            <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-600">
+              {filteredSuggested.length} Ideas
+            </span>
           </div>
 
-          <div className="flex flex-col items-center justify-center mb-8">
-            <div className="relative flex h-32 w-32 items-center justify-center rounded-full border-8 border-slate-50 shadow-inner">
-              <svg className="absolute inset-0 h-full w-full -rotate-90 transform transition-all duration-1000 ease-out" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="46" fill="transparent" stroke="currentColor" strokeWidth="8" className="text-slate-100" />
-                <circle 
-                  cx="50" cy="50" r="46" 
-                  fill="transparent" 
-                  stroke="currentColor" 
-                  strokeWidth="8" 
-                  className="text-indigo-500" 
-                  strokeDasharray={`${optimizationPercent * 2.89} 289`} 
-                />
-              </svg>
-              <div className="flex flex-col items-center">
-                <span className="text-3xl font-black tracking-tight text-slate-900">{optimizationPercent}%</span>
-              </div>
-            </div>
-            <p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Optimization</p>
-          </div>
-
-          <div className="flex flex-col gap-3 border-t border-slate-100 pt-5">
-            <div className="flex items-center justify-between text-sm font-medium">
-              <span className="text-slate-500">Total Keywords Found</span>
-              <span className="text-slate-900 font-bold">{totalKeywords}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm font-medium">
-              <span className="text-emerald-600">Matched</span>
-              <span className="text-emerald-700 font-bold">{matchedCount}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm font-medium">
-              <span className="text-red-500">Missing</span>
-              <span className="text-red-700 font-bold">{missingCount}</span>
-            </div>
+          <div className="flex flex-col gap-2.5">
+            {displaySuggested.length > 0 ? (
+              displaySuggested.map(keyword => (
+                <KeywordItem key={keyword.text} keyword={keyword} colorScheme="suggested" />
+              ))
+            ) : (
+              <p className="text-sm text-slate-500 italic py-2">No suggested keywords found.</p>
+            )}
           </div>
         </div>
       </div>
@@ -190,7 +179,7 @@ export default function KeywordAnalysisSection() {
         <div className="flex justify-center mt-2">
           <button 
             onClick={() => setIsExpanded(!isExpanded)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors"
           >
             {isExpanded ? (
               <>Show Less <ChevronUp size={16} /></>
