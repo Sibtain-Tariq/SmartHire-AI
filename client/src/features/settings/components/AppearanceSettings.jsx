@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Palette, Moon, Sun, Monitor, LayoutTemplate, Type, Zap, Maximize } from 'lucide-react';
 import Toggle from '../../../components/ui/Toggle';
+import { useTheme } from '../../../context/ThemeProvider';
 
 const MOCK_PREFS = {
-  theme: 'system',
   accentColor: 'indigo',
   fontSize: 'medium',
   compactMode: false,
@@ -21,7 +21,27 @@ const ACCENT_COLORS = [
 ];
 
 export default function AppearanceSettings() {
+  const { theme, setTheme } = useTheme();
   const [prefs, setPrefs] = useState(MOCK_PREFS);
+  const [resolvedTheme, setResolvedTheme] = useState('light');
+
+  useEffect(() => {
+    const updateResolvedTheme = () => {
+      if (theme === 'system') {
+        setResolvedTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } else {
+        setResolvedTheme(theme);
+      }
+    };
+    
+    updateResolvedTheme();
+    
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaQuery.addEventListener('change', updateResolvedTheme);
+      return () => mediaQuery.removeEventListener('change', updateResolvedTheme);
+    }
+  }, [theme]);
 
   const handleToggle = (key) => setPrefs(p => ({ ...p, [key]: !p[key] }));
   const handleChange = (key, val) => setPrefs(p => ({ ...p, [key]: val }));
@@ -51,11 +71,11 @@ export default function AppearanceSettings() {
                 { id: 'dark', icon: Moon, label: 'Dark' },
                 { id: 'system', icon: Monitor, label: 'System' }
               ].map(t => {
-                const isSelected = prefs.theme === t.id;
+                const isSelected = theme === t.id;
                 return (
                   <button 
                     key={t.id}
-                    onClick={() => handleChange('theme', t.id)}
+                    onClick={() => setTheme(t.id)}
                     className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 transition-all ${
                       isSelected ? `border-${prefs.accentColor}-500 bg-${prefs.accentColor}-50 text-${prefs.accentColor}-700` : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300'
                     }`}
@@ -158,42 +178,42 @@ export default function AppearanceSettings() {
         <div className="flex flex-col gap-3">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 pl-1">Live Preview</h3>
           <div className={`flex flex-col rounded-2xl border transition-colors duration-500 overflow-hidden shadow-sm h-full min-h-[300px] ${
-            prefs.theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+            resolvedTheme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
           }`}>
             
             {/* Preview Header */}
-            <div className={`px-6 py-4 border-b flex items-center justify-between ${prefs.theme === 'dark' ? 'border-slate-800' : 'border-slate-200 bg-white'}`}>
+            <div className={`px-6 py-4 border-b flex items-center justify-between ${resolvedTheme === 'dark' ? 'border-slate-800' : 'border-slate-200 bg-white'}`}>
               <div className="flex items-center gap-2">
                 <div className={`h-6 w-6 rounded-md bg-${prefs.accentColor}-600 flex items-center justify-center`}>
                   <Zap size={12} className="text-white" />
                 </div>
-                <span className={`font-bold ${prefs.theme === 'dark' ? 'text-white' : 'text-slate-900'} ${prefs.fontSize === 'small' ? 'text-sm' : prefs.fontSize === 'large' ? 'text-lg' : 'text-base'}`}>SmartHire App</span>
+                <span className={`font-bold ${resolvedTheme === 'dark' ? 'text-white' : 'text-slate-900'} ${prefs.fontSize === 'small' ? 'text-sm' : prefs.fontSize === 'large' ? 'text-lg' : 'text-base'}`}>SmartHire App</span>
               </div>
-              <div className={`h-8 w-8 rounded-full ${prefs.theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}`} />
+              <div className={`h-8 w-8 rounded-full ${resolvedTheme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}`} />
             </div>
 
             {/* Preview Body */}
             <div className={`p-6 flex flex-1 flex-col gap-${prefs.compactMode ? '3' : '6'}`}>
-              <div className={`h-4 w-1/3 rounded ${prefs.theme === 'dark' ? 'bg-slate-800' : 'bg-slate-200'}`} />
+              <div className={`h-4 w-1/3 rounded ${resolvedTheme === 'dark' ? 'bg-slate-800' : 'bg-slate-200'}`} />
               
               <div className="flex gap-4">
                 {prefs.sidebarBehavior === 'expanded' && (
-                  <div className={`hidden sm:flex flex-col gap-2 w-32 shrink-0 border-r pr-4 ${prefs.theme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
+                  <div className={`hidden sm:flex flex-col gap-2 w-32 shrink-0 border-r pr-4 ${resolvedTheme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
                     <div className={`h-6 w-full rounded bg-${prefs.accentColor}-100`} />
-                    <div className={`h-6 w-full rounded ${prefs.theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}`} />
-                    <div className={`h-6 w-full rounded ${prefs.theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                    <div className={`h-6 w-full rounded ${resolvedTheme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                    <div className={`h-6 w-full rounded ${resolvedTheme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}`} />
                   </div>
                 )}
                 
-                <div className={`flex-1 rounded-xl p-4 border flex flex-col gap-4 ${prefs.theme === 'dark' ? 'border-slate-800 bg-slate-800/50' : 'border-slate-200 bg-white'}`}>
+                <div className={`flex-1 rounded-xl p-4 border flex flex-col gap-4 ${resolvedTheme === 'dark' ? 'border-slate-800 bg-slate-800/50' : 'border-slate-200 bg-white'}`}>
                   <div className="flex items-center justify-between">
-                    <div className={`h-3 w-24 rounded ${prefs.theme === 'dark' ? 'bg-slate-700' : 'bg-slate-200'}`} />
+                    <div className={`h-3 w-24 rounded ${resolvedTheme === 'dark' ? 'bg-slate-700' : 'bg-slate-200'}`} />
                     <div className={`h-6 w-16 rounded-full bg-${prefs.accentColor}-600`} />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <div className={`h-2 w-full rounded ${prefs.theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`} />
-                    <div className={`h-2 w-5/6 rounded ${prefs.theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`} />
-                    <div className={`h-2 w-4/6 rounded ${prefs.theme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`} />
+                    <div className={`h-2 w-full rounded ${resolvedTheme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`} />
+                    <div className={`h-2 w-5/6 rounded ${resolvedTheme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`} />
+                    <div className={`h-2 w-4/6 rounded ${resolvedTheme === 'dark' ? 'bg-slate-700' : 'bg-slate-100'}`} />
                   </div>
                   
                   {/* Animation Demo */}
