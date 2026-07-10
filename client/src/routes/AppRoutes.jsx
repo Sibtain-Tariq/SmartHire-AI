@@ -15,6 +15,7 @@ const JobMatchPage = lazy(() => import('../features/job-match/pages/JobMatchPage
 
 // Interview Prep Routes
 const InterviewPrepPage = lazy(() => import('../features/interview-prep/pages/InterviewPrepPage'))
+const SettingsPage = lazy(() => import('../features/settings/pages/SettingsPage'))
 
 export default function AppRoutes() {
   return (
@@ -38,7 +39,8 @@ export default function AppRoutes() {
         <Route path="/job-matching" element={<JobMatchPage />} />
 
         <Route path="/interviews" element={<InterviewPrepPage />} />
-        <Route path="/profile" element={<div className="min-h-screen bg-slate-50 p-8 text-slate-900">Profile Placeholder</div>} />
+        <Route path="/profile" element={<SettingsPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
     </>
   )
