@@ -5,6 +5,7 @@ import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import DashboardContainer from '../../../components/dashboard/DashboardContainer';
 import InterviewPrepInputSection from '../components/InterviewPrepInputSection';
 import InterviewConfigCard from '../components/InterviewConfigCard';
+import AIVoiceInterviewCard from '../components/AIVoiceInterviewCard';
 
 export default function InterviewPrepPage() {
   const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active'
@@ -56,20 +57,12 @@ export default function InterviewPrepPage() {
               key="active"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full flex flex-col items-center justify-center min-h-[500px] rounded-3xl border border-slate-200 bg-white shadow-sm gap-4"
+              className="w-full flex flex-col items-center justify-center min-h-[500px]"
             >
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 mb-4 animate-pulse">
-                <Play size={40} className="fill-indigo-600" />
-              </div>
-              <h2 className="text-2xl font-bold text-slate-900">AI Interview Session Active</h2>
-              <p className="text-slate-500 max-w-md text-center">The AI voice processing features have not been integrated yet. This workspace is ready for future development.</p>
-              
-              <button 
-                onClick={() => setSessionState('setup')}
-                className="mt-6 rounded-xl bg-slate-900 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-slate-800"
-              >
-                End Session
-              </button>
+              <AIVoiceInterviewCard 
+                config={interviewConfig} 
+                onEndInterview={() => setSessionState('setup')} 
+              />
             </motion.div>
           )}
         </AnimatePresence>
