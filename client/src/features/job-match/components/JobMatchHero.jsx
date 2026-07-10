@@ -53,11 +53,11 @@ export default function JobMatchHero({ matchData, onAnalyzeAgain }) {
         <div className="flex items-center gap-4 text-xs font-semibold text-slate-500">
           <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
             <FileText size={14} className="text-slate-400" />
-            <span className="truncate max-w-[150px]">{matchData?.resume?.title || 'Resume'}</span>
+            <span className="truncate max-w-[150px]">{matchData?.resume?.title || 'Senior_Software_Engineer_Resume.pdf'}</span>
           </div>
           <div className="hidden sm:flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
             <Briefcase size={14} className="text-slate-400" />
-            <span className="truncate max-w-[150px]">Target Job Description</span>
+            <span className="truncate max-w-[150px]">Software Engineer (Mock Title)</span>
           </div>
           <div className="hidden sm:flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
             <Calendar size={14} className="text-slate-400" />
@@ -116,7 +116,7 @@ export default function JobMatchHero({ matchData, onAnalyzeAgain }) {
           </h3>
           
           <p className="text-base font-medium leading-relaxed text-slate-600 mb-8 max-w-lg">
-            Your resume aligns well with this job description, but adding several missing keywords could significantly improve your ATS compatibility.
+            Your resume aligns well with this job description. Adding a few missing technical keywords and emphasizing leadership experience could significantly improve your ATS compatibility.
           </p>
           
           <div>
@@ -134,3 +134,4 @@ export default function JobMatchHero({ matchData, onAnalyzeAgain }) {
     </div>
   )
 }
+
