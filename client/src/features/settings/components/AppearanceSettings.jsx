@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Palette, Moon, Sun, Monitor, LayoutTemplate, Type, Zap, Maximize } from 'lucide-react';
+import Toggle from '../../../components/ui/Toggle';
 
 const MOCK_PREFS = {
   theme: 'system',
@@ -24,13 +25,6 @@ export default function AppearanceSettings() {
 
   const handleToggle = (key) => setPrefs(p => ({ ...p, [key]: !p[key] }));
   const handleChange = (key, val) => setPrefs(p => ({ ...p, [key]: val }));
-
-  const Toggle = ({ checked, onChange }) => (
-    <label className="relative inline-flex cursor-pointer items-center">
-      <input type="checkbox" className="peer sr-only" checked={checked} onChange={onChange} />
-      <div className={`h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-${prefs.accentColor}-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-${prefs.accentColor}-500/20`}></div>
-    </label>
-  );
 
   return (
     <div className="flex flex-col gap-8 h-full">
@@ -143,7 +137,7 @@ export default function AppearanceSettings() {
                   <span className="text-xs font-medium text-slate-500">Reduce spacing in lists and tables.</span>
                 </div>
               </div>
-              <Toggle checked={prefs.compactMode} onChange={() => handleToggle('compactMode')} />
+              <Toggle checked={prefs.compactMode} onChange={() => handleToggle('compactMode')} activeColor={prefs.accentColor} />
             </div>
 
             <div className="flex items-center justify-between gap-4">
@@ -154,7 +148,7 @@ export default function AppearanceSettings() {
                   <span className="text-xs font-medium text-slate-500">Smooth transitions and effects.</span>
                 </div>
               </div>
-              <Toggle checked={prefs.animations} onChange={() => handleToggle('animations')} />
+              <Toggle checked={prefs.animations} onChange={() => handleToggle('animations')} activeColor={prefs.accentColor} />
             </div>
           </div>
 
