@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FileText, Briefcase, Sparkles, Loader2, CheckCircle2, X, ClipboardPaste, Clock, UploadCloud, File, Calendar, Trash2, RefreshCw, Activity } from 'lucide-react';
 
 export default function JobMatchInputSection({ onAnalyze }) {
@@ -6,16 +6,23 @@ export default function JobMatchInputSection({ onAnalyze }) {
   const [jobDescription, setJobDescription] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
-  const handleMockUpload = () => {
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const sizeInMB = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+    const type = file.name.split('.').pop().toUpperCase();
+
     setIsUploading(true);
     setTimeout(() => {
       setUploadedResume({
-        name: 'Senior_Software_Engineer_Resume.pdf',
-        type: 'PDF',
-        size: '2.4 MB',
+        name: file.name,
+        type: type,
+        size: sizeInMB,
         date: new Date().toLocaleDateString(),
-        atsScore: 88,
+        atsScore: Math.floor(Math.random() * (95 - 70) + 70),
       });
       setIsUploading(false);
     }, 1500);
@@ -70,11 +77,18 @@ export default function JobMatchInputSection({ onAnalyze }) {
                   <h3 className="text-lg font-bold text-slate-700 mb-2">Drag & Drop your resume here</h3>
                   <p className="text-sm font-medium text-slate-500 mb-6">or</p>
                   <button 
-                    onClick={handleMockUpload}
+                    onClick={() => fileInputRef.current?.click()}
                     className="rounded-xl bg-white border border-slate-200 px-6 py-2.5 text-sm font-bold text-indigo-700 shadow-sm hover:bg-indigo-50 hover:border-indigo-200 transition-colors mb-6"
                   >
                     Browse Files
                   </button>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileUpload}
+                    accept=".pdf,.docx,.doc" 
+                    className="hidden" 
+                  />
                   <div className="flex flex-col gap-1 text-xs font-semibold text-slate-400 uppercase tracking-wider">
                     <span>Supported formats: PDF, DOCX</span>
                     <span>Maximum Size: 5 MB</span>
