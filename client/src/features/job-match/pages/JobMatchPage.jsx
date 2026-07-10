@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Target, Sparkles, Building2, CheckCircle2, FileText, Globe } from 'lucide-react'
 import DashboardLayout from '../../../components/dashboard/DashboardLayout'
 import DashboardContainer from '../../../components/dashboard/DashboardContainer'
 import JobMatchInputSection from '../components/JobMatchInputSection'
 import JobMatchHero from '../components/JobMatchHero'
+import ScoreBreakdownCard from '../../resumes/components/ScoreBreakdownCard'
 
 export default function JobMatchPage() {
   const [analysisState, setAnalysisState] = useState('input') // 'input' | 'results'
@@ -73,11 +75,57 @@ export default function JobMatchPage() {
                 onAnalyzeAgain={() => setAnalysisState('input')} 
               />
 
+              {/* 5. Match Score Breakdown */}
+              <section className="flex flex-col gap-4">
+                <div className="flex items-center gap-2 font-semibold text-slate-900 px-2">
+                  <Target size={20} className="text-indigo-500" />
+                  Score Breakdown
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <ScoreBreakdownCard 
+                    title="Skills Match" 
+                    score={82} 
+                    explanation="You possess most of the required hard skills, but are missing a few nice-to-haves." 
+                    icon={Sparkles} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Experience Match" 
+                    score={75} 
+                    explanation="Your years of experience align, but measurable impact is slightly lacking." 
+                    icon={Building2} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Education Match" 
+                    score={100} 
+                    explanation="Your educational background perfectly matches the job requirements." 
+                    icon={CheckCircle2} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Keyword Match" 
+                    score={68} 
+                    explanation="Several important industry keywords were not found in your resume." 
+                    icon={FileText} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Industry Alignment" 
+                    score={90} 
+                    explanation="Strong evidence of relevant industry domain knowledge." 
+                    icon={Globe} 
+                  />
+                  <ScoreBreakdownCard 
+                    title="Overall ATS Compatibility" 
+                    score={88} 
+                    explanation="High readability and excellent scannability for automated systems." 
+                    icon={Target} 
+                  />
+                </div>
+              </section>
+
               {/* Placeholders for future sections */}
               <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 py-20 px-6 text-center mt-4">
                 <h3 className="text-lg font-bold text-slate-700">Results Engine Pending</h3>
                 <p className="text-sm font-medium text-slate-500 mt-2 max-w-md">
-                  The match score breakdown and deeper analysis sections will be rendered here.
+                  The deep analysis sections (Skills, Keywords, Missing Requirements) will be rendered here.
                 </p>
               </div>
 
