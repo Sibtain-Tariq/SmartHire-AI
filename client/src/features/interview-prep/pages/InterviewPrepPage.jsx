@@ -7,9 +7,10 @@ import InterviewPrepInputSection from '../components/InterviewPrepInputSection';
 import InterviewConfigCard from '../components/InterviewConfigCard';
 import AIVoiceInterviewCard from '../components/AIVoiceInterviewCard';
 import LiveConversationTranscript from '../components/LiveConversationTranscript';
+import InterviewFeedbackSection from '../components/InterviewFeedbackSection';
 
 export default function InterviewPrepPage() {
-  const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active'
+  const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active' | 'results'
   const [isStarting, setIsStarting] = useState(false);
   const [interviewConfig, setInterviewConfig] = useState({
     type: 'mixed',
@@ -63,7 +64,7 @@ export default function InterviewPrepPage() {
               <div className="w-full lg:w-1/3 sticky top-8">
                 <AIVoiceInterviewCard 
                   config={interviewConfig} 
-                  onEndInterview={() => setSessionState('setup')} 
+                  onEndInterview={() => setSessionState('results')} 
                 />
               </div>
               
@@ -71,6 +72,18 @@ export default function InterviewPrepPage() {
                 <LiveConversationTranscript />
               </div>
             </motion.div>
+          )}
+
+          {sessionState === 'results' && (
+            <motion.section 
+              key="results"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="w-full"
+            >
+              <InterviewFeedbackSection onRestart={() => setSessionState('setup')} />
+            </motion.section>
           )}
         </AnimatePresence>
       </DashboardContainer>
