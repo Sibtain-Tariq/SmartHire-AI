@@ -1,17 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { LogOut, Settings, User } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { mockUser } from '../../constants/dashboardNavigation'
 
 const menuItems = [
-  { label: 'Profile', icon: User },
-  { label: 'Settings', icon: Settings },
-  { label: 'Logout', icon: LogOut },
+  { label: 'Profile', icon: User, path: '/profile' },
+  { label: 'Settings', icon: Settings, path: '/settings' },
+  { label: 'Logout', icon: LogOut, path: '/logout' },
 ]
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false)
   const containerRef = useRef(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -66,6 +68,12 @@ export default function UserDropdown() {
                     key={item.label}
                     type="button"
                     role="menuitem"
+                    onClick={() => {
+                      setOpen(false)
+                      if (item.path !== '/logout') {
+                        navigate(item.path)
+                      }
+                    }}
                     className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-600 outline-none transition hover:bg-slate-50 hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-sky-400"
                   >
                     <Icon size={16} aria-hidden="true" />

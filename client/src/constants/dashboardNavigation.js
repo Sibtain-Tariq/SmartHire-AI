@@ -7,7 +7,6 @@ import {
   ScrollText,
   Settings,
   Sparkles,
-  User,
 } from 'lucide-react'
 
 export const dashboardNavigation = [
@@ -15,7 +14,6 @@ export const dashboardNavigation = [
   { label: 'Resume Analyzer', path: '/resume-analyzer', icon: ScrollText },
   { label: 'Job Matching', path: '/job-matching', icon: Sparkles },
   { label: 'Interview Prep', path: '/interviews', icon: MessageSquare },
-  { label: 'Profile', path: '/profile', icon: User },
   { label: 'Settings', path: '/settings', icon: Settings },
   { label: 'Help Center', path: '/help', icon: HelpCircle },
 ]
