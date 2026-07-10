@@ -9,6 +9,7 @@ import AIVoiceInterviewCard from '../components/AIVoiceInterviewCard';
 import LiveConversationTranscript from '../components/LiveConversationTranscript';
 import InterviewFeedbackSection from '../components/InterviewFeedbackSection';
 import InterviewPerformanceDashboard from '../components/InterviewPerformanceDashboard';
+import InterviewImprovementPlan from '../components/InterviewImprovementPlan';
 
 export default function InterviewPrepPage() {
   const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active' | 'results'
@@ -85,6 +86,7 @@ export default function InterviewPrepPage() {
             >
               <InterviewPerformanceDashboard />
               <InterviewFeedbackSection onRestart={() => setSessionState('setup')} />
+              <InterviewImprovementPlan />
             </motion.section>
           )}
         </AnimatePresence>
