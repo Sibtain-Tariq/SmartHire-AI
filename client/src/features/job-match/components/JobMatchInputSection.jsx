@@ -123,16 +123,10 @@ export default function JobMatchInputSection({ onAnalyze }) {
 
               <div className="flex items-center gap-3 mt-auto pt-4 border-t border-emerald-200/50">
                 <button 
-                  onClick={() => handleMockUpload()}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
+                  onClick={() => setUploadedResume(null)}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
                 >
                   <RefreshCw size={16} /> Replace Resume
-                </button>
-                <button 
-                  onClick={() => setUploadedResume(null)}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-red-50 border border-red-100 px-4 py-2.5 text-sm font-bold text-red-600 shadow-sm hover:bg-red-100 transition-colors"
-                >
-                  <Trash2 size={16} /> Remove Resume
                 </button>
               </div>
             </div>
