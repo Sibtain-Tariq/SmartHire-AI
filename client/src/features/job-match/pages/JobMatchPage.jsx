@@ -9,7 +9,6 @@ import ScoreBreakdownCard from '../../resumes/components/ScoreBreakdownCard'
 import SkillsComparisonSection from '../components/SkillsComparisonSection'
 import RequirementComparisonCards from '../components/RequirementComparisonCards'
 import OptimizationSuggestionsSection from '../components/OptimizationSuggestionsSection'
-import JobMatchReportsSection from '../components/JobMatchReportsSection'
 import JobMatchActionCenter from '../components/JobMatchActionCenter'
 import JobOverviewSection from '../components/JobOverviewSection'
 
@@ -46,9 +45,6 @@ export default function JobMatchPage() {
             >
               {/* 2 & 3. Resume Selection & JD Input */}
               <JobMatchInputSection onAnalyze={handleAnalyze} />
-
-              {/* Job Match Reports */}
-              <JobMatchReportsSection />
             </motion.section>
           )}
 
