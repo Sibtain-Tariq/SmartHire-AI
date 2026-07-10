@@ -10,8 +10,9 @@ import InterviewQuestionBank from '../components/InterviewQuestionBank';
 import MockInterviewSimulator from '../components/MockInterviewSimulator';
 import InterviewFeedbackSection from '../components/InterviewFeedbackSection';
 import InterviewPerformanceDashboard from '../components/InterviewPerformanceDashboard';
-import InterviewImprovementPlan from '../components/InterviewImprovementPlan';
+import AIInterviewCoach from '../components/AIInterviewCoach';
 import InterviewSummaryCard from '../components/InterviewSummaryCard';
+import InterviewPerformanceReport from '../components/InterviewPerformanceReport';
 
 export default function InterviewPrepPage() {
   const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active' | 'results'
@@ -90,9 +91,10 @@ export default function InterviewPrepPage() {
               className="w-full flex flex-col gap-8"
             >
               <InterviewSummaryCard onRetake={() => setSessionState('setup')} />
+              <InterviewPerformanceReport />
               <InterviewPerformanceDashboard />
               <InterviewFeedbackSection onRestart={() => setSessionState('setup')} />
-              <InterviewImprovementPlan />
+              <AIInterviewCoach />
             </motion.section>
           )}
         </AnimatePresence>

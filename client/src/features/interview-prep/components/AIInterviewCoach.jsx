@@ -1,61 +1,76 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, TrendingUp, Rocket } from 'lucide-react';
+import { ChevronDown, ChevronUp, TrendingUp, BrainCircuit, PlayCircle } from 'lucide-react';
 
-const MOCK_RECOMMENDATIONS = [
+const COACHING_DATA = [
   {
     id: 1,
-    title: 'Use STAR Method',
-    category: 'Communication',
+    title: 'Use the STAR method',
+    category: 'Structure',
     priority: 'High',
     difficulty: 'Medium',
     improvement: '+15%',
     description: 'You struggled to structure your behavioral answers. Using the Situation, Task, Action, Result (STAR) framework will ensure you provide complete, compelling stories without rambling.',
+    exampleAnswer: 'Situation: We were missing deadlines. Task: I needed to optimize the build pipeline. Action: I implemented caching and parallel jobs. Result: Build times dropped by 40%.'
   },
   {
     id: 2,
-    title: 'Reduce filler words',
+    title: 'Avoid filler words',
     category: 'Professionalism',
     priority: 'Medium',
     difficulty: 'Hard',
     improvement: '+8%',
     description: 'You used "um", "like", and "you know" frequently during the technical deep dive. Pausing silently to gather your thoughts projects much higher confidence than using verbal fillers.',
+    exampleAnswer: 'Instead of: "Um, the architecture was, like, distributed..." say: [Pause for 2 seconds] "The architecture was highly distributed..."'
   },
   {
     id: 3,
-    title: 'Increase eye contact',
+    title: 'Maintain eye contact',
     category: 'Confidence',
     priority: 'Low',
     difficulty: 'Easy',
     improvement: '+5%',
     description: 'When answering difficult questions, you tend to look away from the camera. Maintaining virtual eye contact helps build trust and projects authority.',
+    exampleAnswer: 'Actionable tip: Place a small sticky note with a smiley face right next to your webcam lens to remind you where to look.'
   },
   {
     id: 4,
-    title: 'Improve technical explanations',
-    category: 'Technical Skills',
+    title: 'Explain technical concepts more clearly',
+    category: 'Communication',
     priority: 'High',
     difficulty: 'Medium',
     improvement: '+20%',
     description: 'Your understanding is solid, but explaining concepts to a non-technical stakeholder needs work. Practice using analogies to describe complex architectures.',
+    exampleAnswer: 'Analogy: "Think of a Load Balancer like a traffic cop at a busy intersection, directing cars (requests) to the lanes (servers) with the least traffic."'
   },
   {
     id: 5,
-    title: 'Provide measurable examples',
-    category: 'Leadership',
+    title: 'Use measurable achievements',
+    category: 'Impact',
     priority: 'Medium',
     difficulty: 'Easy',
     improvement: '+10%',
-    description: 'You mentioned increasing performance, but did not state by how much. Always attach metrics (e.g., "reduced load time by 40%") to prove your exact impact.',
+    description: 'You mentioned increasing performance, but did not state by how much. Always attach metrics to prove your exact impact on the business.',
+    exampleAnswer: 'Instead of "I made the app faster", say "I optimized the rendering lifecycle, reducing initial page load from 4 seconds to 1.2 seconds, resulting in a 15% increase in user retention."'
+  },
+  {
+    id: 6,
+    title: 'Speak slower',
+    category: 'Pacing',
+    priority: 'Medium',
+    difficulty: 'Medium',
+    improvement: '+12%',
+    description: 'When you became nervous during the system design question, your speaking pace increased dramatically, making you difficult to follow.',
+    exampleAnswer: 'Take a deep breath before beginning your answer. Aim for around 130-150 words per minute for optimal clarity.'
   }
 ];
 
-export default function InterviewImprovementPlan() {
-  const [expandedId, setExpandedId] = useState(MOCK_RECOMMENDATIONS[0].id);
+export default function AIInterviewCoach() {
+  const [expandedId, setExpandedId] = useState(COACHING_DATA[0].id);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'High': return 'bg-red-50 text-red-700 border-red-200';
+      case 'High': return 'bg-rose-50 text-rose-700 border-rose-200';
       case 'Medium': return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'Low': return 'bg-slate-100 text-slate-700 border-slate-200';
       default: return 'bg-slate-50 text-slate-700';
@@ -77,16 +92,16 @@ export default function InterviewImprovementPlan() {
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-2">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
-          <Rocket size={20} />
+          <BrainCircuit size={20} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Improvement Plan</h2>
-          <p className="text-sm font-medium text-slate-500">Actionable recommendations to ace your real interview.</p>
+          <h2 className="text-xl font-bold text-slate-900">AI Interview Coach</h2>
+          <p className="text-sm font-medium text-slate-500">Personalized feedback and actionable examples to perfect your technique.</p>
         </div>
       </div>
 
       <div className="flex flex-col gap-4">
-        {MOCK_RECOMMENDATIONS.map((rec) => {
+        {COACHING_DATA.map((rec) => {
           const isExpanded = expandedId === rec.id;
           
           return (
@@ -136,7 +151,7 @@ export default function InterviewImprovementPlan() {
                   >
                     <div className="p-5 pt-0 flex flex-col gap-4">
                       
-                      {/* Mobile badges (only show if hidden on sm) */}
+                      {/* Mobile badges */}
                       <div className="flex sm:hidden flex-wrap items-center gap-2 mb-2">
                         <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${getPriorityColor(rec.priority)}`}>
                           {rec.priority} Priority
@@ -153,6 +168,15 @@ export default function InterviewImprovementPlan() {
                       <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
                         <p className="text-sm font-medium leading-relaxed text-slate-700">
                           {rec.description}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl bg-indigo-50 p-4 border border-indigo-100 flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-indigo-800 text-xs font-bold uppercase tracking-wider">
+                          <PlayCircle size={14} /> Example Application
+                        </div>
+                        <p className="text-sm font-semibold text-indigo-950 leading-relaxed italic">
+                          {rec.exampleAnswer}
                         </p>
                       </div>
 
