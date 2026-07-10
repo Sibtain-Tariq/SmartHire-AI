@@ -4,20 +4,17 @@ import { Settings, User, Shield, Bell, Palette } from 'lucide-react';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import DashboardContainer from '../../../components/dashboard/DashboardContainer';
 import SettingsNavigation from '../components/SettingsNavigation';
-import ProfileSettings from '../components/ProfileSettings';
 import AccountSettings from '../components/AccountSettings';
 import SecuritySettings from '../components/SecuritySettings';
 import PrivacySettings from '../components/PrivacySettings';
 import AppearanceSettings from '../components/AppearanceSettings';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('account');
 
   // Placeholders for content components to be implemented later
   const renderContent = () => {
     switch (activeTab) {
-      case 'profile':
-        return <ProfileSettings />;
       case 'account':
         return <AccountSettings />;
       case 'security':
