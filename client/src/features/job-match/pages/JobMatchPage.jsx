@@ -11,6 +11,7 @@ import RequirementComparisonCards from '../components/RequirementComparisonCards
 import OptimizationSuggestionsSection from '../components/OptimizationSuggestionsSection'
 import JobMatchReportsSection from '../components/JobMatchReportsSection'
 import JobMatchActionCenter from '../components/JobMatchActionCenter'
+import JobOverviewSection from '../components/JobOverviewSection'
 
 export default function JobMatchPage() {
   const [analysisState, setAnalysisState] = useState('input') // 'input' | 'results'
@@ -75,6 +76,11 @@ export default function JobMatchPage() {
                 >
                   New Match
                 </button>
+              </div>
+
+              {/* Job Overview */}
+              <div className="w-full">
+                <JobOverviewSection />
               </div>
 
               {/* 4. Match Overview / Hero */}
