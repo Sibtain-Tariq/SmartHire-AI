@@ -8,6 +8,7 @@ import InterviewConfigCard from '../components/InterviewConfigCard';
 import AIVoiceInterviewCard from '../components/AIVoiceInterviewCard';
 import LiveConversationTranscript from '../components/LiveConversationTranscript';
 import InterviewFeedbackSection from '../components/InterviewFeedbackSection';
+import InterviewPerformanceDashboard from '../components/InterviewPerformanceDashboard';
 
 export default function InterviewPrepPage() {
   const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active' | 'results'
@@ -80,8 +81,9 @@ export default function InterviewPrepPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.98 }}
-              className="w-full"
+              className="w-full flex flex-col gap-8"
             >
+              <InterviewPerformanceDashboard />
               <InterviewFeedbackSection onRestart={() => setSessionState('setup')} />
             </motion.section>
           )}
