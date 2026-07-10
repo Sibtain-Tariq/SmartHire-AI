@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play } from 'lucide-react';
+
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import DashboardContainer from '../../../components/dashboard/DashboardContainer';
 import InterviewPrepInputSection from '../components/InterviewPrepInputSection';

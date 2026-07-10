@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, AlertTriangle, TrendingUp, Target, BrainCircuit, Rocket } from 'lucide-react';
+import { ChevronDown, ChevronUp, TrendingUp, Rocket } from 'lucide-react';
 
 const MOCK_RECOMMENDATIONS = [
   {
