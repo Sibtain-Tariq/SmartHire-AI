@@ -6,6 +6,8 @@ import DashboardContainer from '../../../components/dashboard/DashboardContainer
 import SettingsNavigation from '../components/SettingsNavigation';
 import ProfileSettings from '../components/ProfileSettings';
 import AccountSettings from '../components/AccountSettings';
+import SecuritySettings from '../components/SecuritySettings';
+import AppearanceSettings from '../components/AppearanceSettings';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
@@ -18,11 +20,11 @@ export default function SettingsPage() {
       case 'account':
         return <AccountSettings />;
       case 'security':
-        return <div className="p-8 text-center text-slate-500">Security Settings Placeholder</div>;
+        return <SecuritySettings />;
       case 'notifications':
         return <div className="p-8 text-center text-slate-500">Notification Settings Placeholder</div>;
       case 'appearance':
-        return <div className="p-8 text-center text-slate-500">Appearance Settings Placeholder</div>;
+        return <AppearanceSettings />;
       default:
         return null;
     }
