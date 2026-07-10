@@ -7,6 +7,7 @@ import SettingsNavigation from '../components/SettingsNavigation';
 import ProfileSettings from '../components/ProfileSettings';
 import AccountSettings from '../components/AccountSettings';
 import SecuritySettings from '../components/SecuritySettings';
+import PrivacySettings from '../components/PrivacySettings';
 import AppearanceSettings from '../components/AppearanceSettings';
 
 export default function SettingsPage() {
@@ -21,6 +22,8 @@ export default function SettingsPage() {
         return <AccountSettings />;
       case 'security':
         return <SecuritySettings />;
+      case 'privacy':
+        return <PrivacySettings />;
       case 'notifications':
         return <div className="p-8 text-center text-slate-500">Notification Settings Placeholder</div>;
       case 'appearance':
