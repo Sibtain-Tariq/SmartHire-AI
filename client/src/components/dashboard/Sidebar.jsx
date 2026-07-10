@@ -15,7 +15,7 @@ export default function Sidebar({ collapsed = false, onToggle, onNavigate }) {
       initial={false}
       animate={{ width: collapsed ? 88 : 288 }}
       transition={{ type: 'spring', stiffness: 360, damping: 34 }}
-      className="hidden h-screen shrink-0 border-r border-slate-200/80 bg-slate-50/95 p-4 lg:sticky lg:top-0 lg:flex lg:flex-col"
+      className="hidden h-screen shrink-0 border-r border-slate-200/80 bg-slate-50/95 p-4 lg:sticky lg:top-0 lg:flex lg:flex-col dark:bg-slate-900/95 dark:border-slate-800/80"
       aria-label="Dashboard navigation"
     >
       <div className={`flex items-center ${collapsed ? 'flex-col gap-3' : 'justify-between gap-2'}`}>
