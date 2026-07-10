@@ -6,8 +6,8 @@ import DashboardContainer from '../../../components/dashboard/DashboardContainer
 import InterviewPrepInputSection from '../components/InterviewPrepInputSection';
 import InterviewModeSelection from '../components/InterviewModeSelection';
 import InterviewConfigCard from '../components/InterviewConfigCard';
-import AIVoiceInterviewCard from '../components/AIVoiceInterviewCard';
-import LiveConversationTranscript from '../components/LiveConversationTranscript';
+import InterviewQuestionBank from '../components/InterviewQuestionBank';
+import MockInterviewSimulator from '../components/MockInterviewSimulator';
 import InterviewFeedbackSection from '../components/InterviewFeedbackSection';
 import InterviewPerformanceDashboard from '../components/InterviewPerformanceDashboard';
 import InterviewImprovementPlan from '../components/InterviewImprovementPlan';
@@ -60,27 +60,25 @@ export default function InterviewPrepPage() {
               <InterviewConfigCard config={interviewConfig} onChange={setInterviewConfig} />
               
               <InterviewPrepInputSection onStart={handleStart} isStarting={isStarting} />
+              
+              <div className="pt-8 mt-4 border-t border-slate-200">
+                <InterviewQuestionBank />
+              </div>
             </motion.section>
           )}
 
           {sessionState === 'active' && (
-            <motion.div 
+            <motion.section 
               key="active"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full flex flex-col lg:flex-row gap-8 items-start"
+              className="w-full"
             >
-              <div className="w-full lg:w-1/3 sticky top-8">
-                <AIVoiceInterviewCard 
-                  config={interviewConfig} 
-                  onEndInterview={() => setSessionState('results')} 
-                />
-              </div>
-              
-              <div className="w-full lg:w-2/3">
-                <LiveConversationTranscript />
-              </div>
-            </motion.div>
+              <MockInterviewSimulator 
+                config={interviewConfig} 
+                onEndInterview={() => setSessionState('results')} 
+              />
+            </motion.section>
           )}
 
           {sessionState === 'results' && (
