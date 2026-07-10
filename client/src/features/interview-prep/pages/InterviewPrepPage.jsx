@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import DashboardContainer from '../../../components/dashboard/DashboardContainer';
 import InterviewPrepInputSection from '../components/InterviewPrepInputSection';
+import InterviewModeSelection from '../components/InterviewModeSelection';
 import InterviewConfigCard from '../components/InterviewConfigCard';
 import AIVoiceInterviewCard from '../components/AIVoiceInterviewCard';
 import LiveConversationTranscript from '../components/LiveConversationTranscript';
@@ -16,6 +17,7 @@ export default function InterviewPrepPage() {
   const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active' | 'results'
   const [isStarting, setIsStarting] = useState(false);
   const [interviewConfig, setInterviewConfig] = useState({
+    mode: 'practice',
     type: 'mixed',
     difficulty: 'medium',
     duration: '20',
@@ -51,6 +53,10 @@ export default function InterviewPrepPage() {
               exit={{ opacity: 0, scale: 0.98 }}
               className="w-full flex flex-col gap-8"
             >
+              <InterviewModeSelection 
+                selectedMode={interviewConfig.mode} 
+                onChange={(mode) => setInterviewConfig({ ...interviewConfig, mode })} 
+              />
               <InterviewConfigCard config={interviewConfig} onChange={setInterviewConfig} />
               
               <InterviewPrepInputSection onStart={handleStart} isStarting={isStarting} />
