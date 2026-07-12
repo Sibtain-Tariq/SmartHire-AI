@@ -30,6 +30,10 @@ export const ALLOWED_FILE_TYPES = {
   REPORT: [
     'application/pdf', // pdf
   ],
+  INTERVIEW: [
+    'audio/mpeg', // mp3
+    'audio/wav', // wav
+  ],
 }
 
 // Sizes are in Bytes (MB * 1024 * 1024)
@@ -37,4 +41,5 @@ export const MAX_FILE_SIZES = {
   RESUME: 10 * 1024 * 1024, // 10MB
   AVATAR: 5 * 1024 * 1024,  // 5MB
   REPORT: 20 * 1024 * 1024, // 20MB
+  INTERVIEW: 50 * 1024 * 1024, // 50MB
 }
