@@ -1,55 +1,111 @@
 import StorageService from './StorageService'
+import { STORAGE_BUCKETS, ALLOWED_FILE_TYPES, MAX_FILE_SIZES } from '../constants/storage'
+import { getAvatarPath } from '../utils/storageHelpers'
 
 /**
  * AvatarStorageService
- * Handles uploading and fetching user avatars from the `public-assets` bucket.
+ * Handles uploading, deleting, and fetching user avatars.
+ * Uses the centralized storage config and standardized types.
  */
 class AvatarStorageService {
-  constructor() {
-    this.bucket = 'public-assets'
+  /**
+   * Helper to format generic errors into StorageError shapes.
+   * @param {string} code 
+   * @param {string} message 
+   * @param {Error} [originalError] 
+   * @returns {import('../types/storageTypes').StorageError}
+   */
+  _formatError(code, message, originalError = null) {
+    return { code, message, originalError }
   }
 
   /**
-   * Generates the storage path for an avatar.
-   * @param {string} userId - The unique user ID
-   * @param {string} filename - Original filename to extract extension
-   * @returns {string} - Computed path like `avatars/{userId}/avatar_{timestamp}.ext`
+   * Validates a file against configured avatar types and size limits.
+   * @param {File} file 
+   * @returns {import('../types/storageTypes').StorageError | null}
    */
-  _generatePath(userId, filename) {
-    const ext = filename.split('.').pop()
-    const timestamp = Date.now()
-    return `avatars/${userId}/avatar_${timestamp}.${ext}`
-  }
-
-  /**
-   * Upload an avatar to the public bucket.
-   * @param {string} userId - The user ID
-   * @param {File} file - The image file
-   * @returns {Promise<string>} The public URL of the uploaded avatar
-   */
-  async uploadAvatar(userId, file) {
-    if (!file.type.startsWith('image/')) {
-      throw new Error('File must be an image.')
+  _validateFile(file) {
+    if (!ALLOWED_FILE_TYPES.AVATAR.includes(file.type)) {
+      return this._formatError(
+        'INVALID_FILE_TYPE',
+        'Only JPG, JPEG, and PNG files are allowed for avatars.'
+      )
     }
 
-    const path = this._generatePath(userId, file.name)
-    
-    // Upload the file
-    await StorageService.uploadFile(this.bucket, path, file, {
-      cacheControl: '3600',
-      upsert: true, // Upsert is useful if overwriting exactly, but we use timestamps
-    })
+    if (file.size > MAX_FILE_SIZES.AVATAR) {
+      return this._formatError(
+        'FILE_TOO_LARGE',
+        'Avatar file size must not exceed 5MB.'
+      )
+    }
 
-    // Return the public URL since avatars are public
-    return StorageService.getPublicUrl(this.bucket, path)
+    return null
   }
 
   /**
-   * Deletes a user's specific avatar.
+   * Upload an avatar to the avatars bucket.
+   * @param {string} userId - The user ID
+   * @param {File} file - The image file
+   * @returns {Promise<import('../types/storageTypes').UploadResult>} The public URL of the uploaded avatar
+   */
+  async uploadAvatar(userId, file) {
+    try {
+      const validationError = this._validateFile(file)
+      if (validationError) {
+        return { success: false, error: validationError }
+      }
+
+      const path = getAvatarPath(userId, file.name)
+      
+      await StorageService.uploadFile(STORAGE_BUCKETS.AVATARS, path, file, {
+        cacheControl: '3600',
+        upsert: false, // Prevent overwriting unintentionally, though timestamp makes collisions unlikely
+      })
+
+      // Avatars are public, so return the direct URL immediately
+      const url = StorageService.getPublicUrl(STORAGE_BUCKETS.AVATARS, path)
+      return { success: true, path, url }
+    } catch (error) {
+      return { 
+        success: false, 
+        error: this._formatError('UPLOAD_FAILED', 'Failed to upload avatar to storage.', error) 
+      }
+    }
+  }
+
+  /**
+   * Deletes a specific user avatar.
    * @param {string} path - The exact path to the avatar
+   * @returns {Promise<import('../types/storageTypes').DeleteResult>}
    */
   async deleteAvatar(path) {
-    return await StorageService.deleteFile(this.bucket, path)
+    try {
+      await StorageService.deleteFile(STORAGE_BUCKETS.AVATARS, path)
+      return { success: true, path }
+    } catch (error) {
+      return {
+        success: false,
+        error: this._formatError('DELETE_FAILED', 'Failed to delete avatar from storage.', error)
+      }
+    }
+  }
+
+  /**
+   * Generates a permanent public URL for the avatar.
+   * @param {string} path - The exact path inside the avatars bucket
+   * @returns {import('../types/storageTypes').DownloadResult}
+   */
+  getAvatarUrl(path) {
+    try {
+      // Avatars are generally public, so we don't need a signed URL
+      const url = StorageService.getPublicUrl(STORAGE_BUCKETS.AVATARS, path)
+      return { success: true, url }
+    } catch (error) {
+      return {
+        success: false,
+        error: this._formatError('URL_GENERATION_FAILED', 'Failed to retrieve avatar URL.', error)
+      }
+    }
   }
 }
 
