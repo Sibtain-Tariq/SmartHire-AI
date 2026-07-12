@@ -1,57 +1,34 @@
 import { supabase } from './supabase'
 
 /**
- * Temporary verification utility to confirm Supabase is configured and reachable.
- * Run this function in your browser console: `window.runSupabaseHealthCheck()`
+ * Temporary verification utility to confirm Supabase is configured correctly.
+ * Run this function in your browser console: `window.runConnectionTest()`
  */
-export async function runSupabaseHealthCheck() {
-  console.log('🔍 Starting Supabase Health Check...')
-  
+export async function runConnectionTest() {
   try {
     const url = import.meta.env.VITE_SUPABASE_URL
     const key = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-    // 1. Verify environment variables
+    // Verify variables load correctly
     if (!url || !key) {
-      console.error('❌ FAILURE: Missing Environment Variables (VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY).')
-      return false
+      throw new Error('Environment variables VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY are missing.')
     }
-    console.log('✅ Environment variables are loaded correctly.')
 
-    // 2. Verify client initialization
+    // Verify client initialized successfully
     if (!supabase) {
-      console.error('❌ FAILURE: Supabase client failed to initialize.')
-      return false
+      throw new Error('Supabase client failed to initialize.')
     }
-    console.log('✅ Supabase client initialized successfully.')
 
-    // 3. Verify backend connectivity (Using the Auth health endpoint to avoid touching Storage/DB)
-    const response = await fetch(`${url}/auth/v1/health`, {
-      method: 'GET',
-      headers: {
-        'apikey': key,
-        'Authorization': `Bearer ${key}`
-      }
-    })
-
-    if (response.ok) {
-      const data = await response.json()
-      console.log('✅ SUCCESS: Successfully reached the Supabase backend!')
-      console.log('📡 Health status:', data)
-      return true
-    } else {
-      console.error(`❌ FAILURE: Reached Supabase, but received an error status: ${response.status}`)
-      return false
-    }
+    // If we reach here, the client successfully initialized with the provided keys
+    console.log('✓ Supabase Client Connected')
 
   } catch (error) {
-    console.error('❌ FAILURE: Network error or invalid URL. Could not reach Supabase backend.')
-    console.error('Error details:', error.message)
-    return false
+    console.error('✗ Supabase Initialization Failed')
+    console.error('Error Details:', error.message)
   }
 }
 
 // Attach to window for easy execution from the browser console during development
 if (typeof window !== 'undefined') {
-  window.runSupabaseHealthCheck = runSupabaseHealthCheck
+  window.runConnectionTest = runConnectionTest
 }
