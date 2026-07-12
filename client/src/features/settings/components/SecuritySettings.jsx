@@ -59,7 +59,7 @@ export default function SecuritySettings() {
               <button 
                 disabled
                 className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-400 shadow-sm cursor-not-allowed opacity-70"
-                title="Firebase integration required to change password."
+                title="Authentication provider required to change password."
               >
                 Change Password
               </button>
