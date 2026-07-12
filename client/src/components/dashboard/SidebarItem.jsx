@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 
 export default function SidebarItem({ item, collapsed = false, onSelect, layoutId = 'active-sidebar-item' }) {
   const location = useLocation()
+  const navigate = useNavigate()
   const isActive = item.path !== '#' && location.pathname.startsWith(item.path) && (item.path !== '/dashboard' || location.pathname === '/dashboard')
   const Icon = item.icon
   
@@ -59,6 +60,10 @@ export default function SidebarItem({ item, collapsed = false, onSelect, layoutI
             if (hasChildren) {
               e.preventDefault();
               setIsOpen(!isOpen);
+            } else if (item.path === '#logout') {
+              localStorage.clear();
+              navigate('/login');
+              if (onSelect) onSelect(e);
             } else if (onSelect) {
               onSelect(e);
             }

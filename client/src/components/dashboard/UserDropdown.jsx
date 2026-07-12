@@ -70,7 +70,10 @@ export default function UserDropdown() {
                     role="menuitem"
                     onClick={() => {
                       setOpen(false)
-                      if (item.path !== '/logout') {
+                      if (item.path === '/logout') {
+                        localStorage.clear()
+                        navigate('/login')
+                      } else {
                         navigate(item.path)
                       }
                     }}
