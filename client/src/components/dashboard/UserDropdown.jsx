@@ -72,7 +72,7 @@ export default function UserDropdown() {
                       setOpen(false)
                       if (item.path === '/logout') {
                         localStorage.clear()
-                        navigate('/login')
+                        navigate('/')
                       } else {
                         navigate(item.path)
                       }

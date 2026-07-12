@@ -62,7 +62,7 @@ export default function SidebarItem({ item, collapsed = false, onSelect, layoutI
               setIsOpen(!isOpen);
             } else if (item.path === '#logout') {
               localStorage.clear();
-              navigate('/login');
+              navigate('/');
               if (onSelect) onSelect(e);
             } else if (onSelect) {
               onSelect(e);
