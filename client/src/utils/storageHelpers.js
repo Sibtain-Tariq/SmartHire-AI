@@ -1,4 +1,4 @@
-import { STORAGE_FOLDERS } from '../constants/storage'
+import { STORAGE_FOLDERS, STORAGE_BUCKETS } from '../constants/storage'
 
 /**
  * Sanitizes a filename by removing special characters, replacing spaces with hyphens,
@@ -23,30 +23,37 @@ export function sanitizeFilename(filename) {
 }
 
 /**
- * Generates a unique filename to prevent collisions, appending a timestamp.
+ * Generates a unique filename to prevent collisions.
+ * Appends a timestamp and optionally a short UUID string.
  * @param {string} filename - The original filename.
+ * @param {boolean} useUuid - If true, appends a random UUID segment alongside the timestamp.
  * @returns {string} - A unique, sanitized filename.
  */
-export function generateUniqueFilename(filename) {
+export function generateUniqueFilename(filename, useUuid = true) {
   const sanitized = sanitizeFilename(filename)
   const lastDotIndex = sanitized.lastIndexOf('.')
   
+  const timestamp = Date.now()
+  // crypto.randomUUID() is available in modern browsers. Fallback to Math.random() if needed.
+  const uuid = useUuid ? (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID().split('-')[0] : Math.random().toString(36).substring(2, 8)) : ''
+  const uniqueSuffix = useUuid ? `_${timestamp}_${uuid}` : `_${timestamp}`
+
   if (lastDotIndex !== -1) {
     const name = sanitized.slice(0, lastDotIndex)
     const ext = sanitized.slice(lastDotIndex)
-    return `${name}_${Date.now()}${ext}`
+    return `${name}${uniqueSuffix}${ext}`
   }
   
-  return `${sanitized}_${Date.now()}`
+  return `${sanitized}${uniqueSuffix}`
 }
 
 /**
  * Core helper to generate standard user storage paths.
  * Returns: `users/{userId}/{folder}/{uniqueFilename}`
  */
-export function generateUserStoragePath(userId, folder, filename) {
+export function generateUserStoragePath(userId, folder, filename, useUuid = true) {
   if (!userId) throw new Error('userId is required to generate a storage path.')
-  const uniqueFilename = generateUniqueFilename(filename)
+  const uniqueFilename = generateUniqueFilename(filename, useUuid)
   return `${STORAGE_FOLDERS.USERS}/${userId}/${folder}/${uniqueFilename}`
 }
 
@@ -54,26 +61,26 @@ export function generateUserStoragePath(userId, folder, filename) {
  * Specific helper for Resume paths
  */
 export function getResumePath(userId, filename) {
-  return generateUserStoragePath(userId, 'resumes', filename)
+  return generateUserStoragePath(userId, STORAGE_BUCKETS.RESUMES, filename)
 }
 
 /**
  * Specific helper for Avatar paths
  */
 export function getAvatarPath(userId, filename) {
-  return generateUserStoragePath(userId, 'avatars', filename)
+  return generateUserStoragePath(userId, STORAGE_BUCKETS.AVATARS, filename)
 }
 
 /**
  * Specific helper for Report paths
  */
 export function getReportPath(userId, filename) {
-  return generateUserStoragePath(userId, 'reports', filename)
+  return generateUserStoragePath(userId, STORAGE_BUCKETS.REPORTS, filename)
 }
 
 /**
- * Specific helper for Interview paths
+ * Specific helper for Interview Recording paths
  */
-export function getInterviewPath(userId, filename) {
-  return generateUserStoragePath(userId, 'interviews', filename)
+export function getInterviewRecordingPath(userId, filename) {
+  return generateUserStoragePath(userId, STORAGE_BUCKETS.INTERVIEW_RECORDINGS, filename)
 }
