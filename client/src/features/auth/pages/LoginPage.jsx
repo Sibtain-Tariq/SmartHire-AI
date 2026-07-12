@@ -7,24 +7,43 @@ import { useAuth } from '../context/AuthContext'
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
 
   const { signIn } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    const email = e.target.email.value.trim()
+    const password = e.target.password.value
+    
+    // Basic frontend validation
+    if (!email || !password) {
+      setError('Please fill in all fields.')
+      return
+    }
+
     setIsLoading(true)
     setError('')
+    setSuccessMsg('')
     
     try {
-      const response = await signIn(e.target.email.value, e.target.password.value)
+      const response = await signIn(email, password)
       if (!response.success) {
-        setError(response.error?.message || 'Failed to sign in.')
+        setError(response.error?.message || 'Failed to sign in. Please check your credentials.')
         setIsLoading(false)
         return
       }
-      navigate('/dashboard')
+      
+      // Show success message briefly before redirecting
+      setSuccessMsg('Successfully signed in! Redirecting to dashboard...')
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 800)
+      
     } catch (err) {
       setError(err.message || 'An unexpected error occurred.')
       setIsLoading(false)
@@ -46,6 +65,13 @@ export default function LoginPage() {
           </div>
         ) : null}
 
+        {successMsg ? (
+          <div className="mb-6 flex items-start gap-3 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-700 border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30">
+            <Loader2 size={18} className="mt-0.5 shrink-0 animate-spin" />
+            <p className="font-medium">{successMsg}</p>
+          </div>
+        ) : null}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -60,7 +86,8 @@ export default function LoginPage() {
                 type="email"
                 placeholder="you@company.com"
                 required
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isLoading}
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
               />
             </div>
           </div>
@@ -78,12 +105,14 @@ export default function LoginPage() {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 required
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isLoading}
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 dark:hover:text-slate-300"
+                disabled={isLoading}
+                className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 disabled:opacity-60 dark:hover:text-slate-300"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -94,7 +123,10 @@ export default function LoginPage() {
             <label className="flex items-center gap-2 cursor-pointer group">
               <input 
                 type="checkbox" 
-                className="h-4 w-4 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                disabled={isLoading}
+                className="h-4 w-4 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
               />
               <span className="text-sm text-slate-600 select-none group-hover:text-slate-800 transition dark:text-slate-400 dark:group-hover:text-slate-200">Remember me</span>
             </label>
@@ -106,7 +138,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || successMsg}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-3.5 text-sm font-semibold text-white outline-none transition hover:bg-slate-800 focus-visible:ring-4 focus-visible:ring-slate-900/10 disabled:opacity-70 disabled:cursor-not-allowed dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
           >
             {isLoading ? <Loader2 size={18} className="animate-spin" /> : 'Sign in'}
