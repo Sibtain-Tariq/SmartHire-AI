@@ -10,33 +10,72 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let unsubscribe = null
+    let isMounted = true
 
     // Initialize session from local storage / Supabase on first load
     const initializeAuth = async () => {
       try {
-        const { success, session } = await AuthService.getCurrentSession()
-        if (success && session) {
-          setSession(session)
-          setUser(session.user)
+        const { success, session: currentSession } = await AuthService.getCurrentSession()
+        
+        if (isMounted) {
+          if (success && currentSession) {
+            setSession(currentSession)
+            setUser(currentSession.user)
+          } else {
+            // Explicitly clear state if session restoration fails (e.g., token expired)
+            setSession(null)
+            setUser(null)
+          }
         }
       } catch (error) {
         console.error('[AuthContext] Failed to initialize session:', error)
+        if (isMounted) {
+          setSession(null)
+          setUser(null)
+        }
       } finally {
-        setIsLoading(false)
+        if (isMounted) {
+          setIsLoading(false)
+        }
       }
     }
 
+    // Run initialization immediately
     initializeAuth()
 
-    // Listen for auth state changes (login, logout, token refresh)
+    // Listen for auth state changes globally (login, logout, token refresh, etc.)
     unsubscribe = AuthService.subscribeToAuthChanges((event, newSession) => {
-      setSession(newSession)
-      setUser(newSession?.user || null)
+      if (!isMounted) return
+
+      // Supabase auto-refreshes tokens and triggers these events natively.
+      // If a token expires and fails to refresh, Supabase fires SIGNED_OUT.
+      switch (event) {
+        case 'SIGNED_IN':
+        case 'TOKEN_REFRESHED':
+        case 'INITIAL_SESSION':
+        case 'PASSWORD_RECOVERY':
+        case 'USER_UPDATED':
+          setSession(newSession)
+          setUser(newSession?.user || null)
+          break
+        case 'SIGNED_OUT':
+          // Auto-logout: forcefully purge state when the session dies
+          setSession(null)
+          setUser(null)
+          break
+        default:
+          // Fallback sync
+          setSession(newSession)
+          setUser(newSession?.user || null)
+      }
+      
+      // Ensure loading state is dropped once the listener kicks in
       setIsLoading(false)
     })
 
-    // Automatic cleanup on unmount
+    // Automatic cleanup on unmount to prevent memory leaks and duplicate listeners
     return () => {
+      isMounted = false
       if (unsubscribe) {
         unsubscribe()
       }
