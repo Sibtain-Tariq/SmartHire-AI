@@ -97,6 +97,25 @@ class StorageService {
 
     return data.signedUrl
   }
+  /**
+   * List files within a specific bucket and path.
+   * @param {string} bucket - The Supabase storage bucket name
+   * @param {string} path - The folder path to list files from
+   * @param {object} options - Options like limit, offset, sortBy
+   * @returns {Promise<any[]>} The list of file objects
+   */
+  async listFiles(bucket, path, options = { limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' } }) {
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .list(path, options)
+
+    if (error) {
+      console.error(`[StorageService] List Error at ${bucket}/${path}:`, error.message)
+      throw error
+    }
+
+    return data
+  }
 }
 
 export default new StorageService()
