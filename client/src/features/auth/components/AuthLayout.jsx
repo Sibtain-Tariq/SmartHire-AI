@@ -1,11 +1,24 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Sparkles, CheckCircle2 } from 'lucide-react'
+import { Sparkles, CheckCircle2, Moon, Sun } from 'lucide-react'
+import { useTheme } from '../../../context/ThemeProvider'
 
 export default function AuthLayout({ children }) {
+  const { theme, toggleTheme } = useTheme()
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative flex min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      {/* Theme Toggle Button */}
+      <button
+        onClick={toggleTheme}
+        className="absolute right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white/50 text-slate-600 shadow-sm backdrop-blur-md outline-none transition hover:bg-white hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-sky-400 sm:right-8 sm:top-8 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+        aria-label="Toggle dark mode"
+      >
+        {isDark ? <Sun size={18} /> : <Moon size={18} />}
+      </button>
+
       {/* Left Sidebar (Branding & Marketing) - Hidden on smaller screens */}
       <div className="hidden w-1/2 flex-col justify-between border-r border-slate-200/80 bg-white p-12 lg:flex xl:w-5/12 dark:border-slate-800/80 dark:bg-slate-900">
         {/* Logo */}
