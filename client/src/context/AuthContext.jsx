@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
     // Initialize session from local storage / Supabase on first load
     const initializeAuth = async () => {
       try {
-        const { success, session } = await AuthService.getSession()
+        const { success, session } = await AuthService.getCurrentSession()
         if (success && session) {
           setSession(session)
           setUser(session.user)
@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
     initializeAuth()
 
     // Listen for auth state changes (login, logout, token refresh)
-    unsubscribe = AuthService.onAuthStateChange((event, newSession) => {
+    unsubscribe = AuthService.subscribeToAuthChanges((event, newSession) => {
       setSession(newSession)
       setUser(newSession?.user || null)
       setIsLoading(false)
@@ -47,10 +47,12 @@ export function AuthProvider({ children }) {
     user,
     session,
     isLoading,
-    signIn: AuthService.signInWithEmail.bind(AuthService),
-    signUp: AuthService.signUpWithEmail.bind(AuthService),
+    signIn: AuthService.signIn.bind(AuthService),
+    signUp: AuthService.signUp.bind(AuthService),
     signOut: AuthService.signOut.bind(AuthService),
-    resetPassword: AuthService.resetPassword.bind(AuthService)
+    resetPassword: AuthService.resetPassword.bind(AuthService),
+    updatePassword: AuthService.updatePassword.bind(AuthService),
+    refreshSession: AuthService.refreshSession.bind(AuthService)
   }
 
   return (
