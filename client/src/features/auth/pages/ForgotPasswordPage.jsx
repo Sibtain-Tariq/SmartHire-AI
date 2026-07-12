@@ -13,15 +13,28 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    const email = e.target.email.value.trim()
+    if (!email) {
+      return setError('Please enter a valid email address.')
+    }
+
     setIsLoading(true)
     setError('')
     setSuccess(false)
     
     try {
-      await resetPassword(e.target.email.value)
+      const response = await resetPassword(email)
+      
+      if (!response.success) {
+        setError(response.error?.message || 'Failed to send reset link.')
+        setIsLoading(false)
+        return
+      }
+      
       setSuccess(true)
     } catch (err) {
-      setError(err.message)
+      setError(err.message || 'An unexpected error occurred.')
     } finally {
       setIsLoading(false)
     }
@@ -71,7 +84,8 @@ export default function ForgotPasswordPage() {
                   type="email"
                   placeholder="you@company.com"
                   required
-                  className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                  disabled={isLoading}
+                  className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
                 />
               </div>
             </div>
