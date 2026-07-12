@@ -9,12 +9,14 @@ import { STORAGE_FOLDERS } from '../constants/storage'
  */
 export default class BaseStorageService {
   /**
-   * @param {string} bucketName - The configured bucket constant
-   * @param {string} categoryName - The configured category constant ('RESUME', 'AVATAR', etc.)
+   * @param {string} bucketName - The configured real Supabase bucket (e.g. 'private-user-data')
+   * @param {string} categoryFolder - The folder category inside the bucket (e.g. 'resumes')
+   * @param {string} categoryName - The constant category used for validation ('RESUME', 'AVATAR')
    * @param {Function} pathGenerator - Helper function to generate specific paths
    */
-  constructor(bucketName, categoryName, pathGenerator) {
+  constructor(bucketName, categoryFolder, categoryName, pathGenerator) {
     this.bucket = bucketName
+    this.categoryFolder = categoryFolder
     this.category = categoryName
     this.generatePath = pathGenerator
   }
@@ -80,7 +82,7 @@ export default class BaseStorageService {
    */
   async list(userId) {
     try {
-      const folderPath = `${STORAGE_FOLDERS.USERS}/${userId}/${this.bucket}`
+      const folderPath = `${STORAGE_FOLDERS.USERS}/${userId}/${this.categoryFolder}`
       const files = await StorageService.listFiles(this.bucket, folderPath)
       const cleanFiles = files.filter(f => f.name !== '.emptyFolderPlaceholder')
       return { success: true, files: cleanFiles }

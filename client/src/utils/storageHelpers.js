@@ -1,4 +1,4 @@
-import { STORAGE_FOLDERS, STORAGE_BUCKETS } from '../constants/storage'
+import { STORAGE_FOLDERS, STORAGE_CATEGORIES } from '../constants/storage'
 
 /**
  * Sanitizes a filename by removing special characters, replacing spaces with hyphens,
@@ -49,38 +49,38 @@ export function generateUniqueFilename(filename, useUuid = true) {
 
 /**
  * Core helper to generate standard user storage paths.
- * Returns: `users/{userId}/{folder}/{uniqueFilename}`
+ * Returns: `users/{userId}/{categoryFolder}/{uniqueFilename}`
  */
-export function generateUserStoragePath(userId, folder, filename, useUuid = true) {
+export function generateUserStoragePath(userId, categoryFolder, filename, useUuid = true) {
   if (!userId) throw new Error('userId is required to generate a storage path.')
   const uniqueFilename = generateUniqueFilename(filename, useUuid)
-  return `${STORAGE_FOLDERS.USERS}/${userId}/${folder}/${uniqueFilename}`
+  return `${STORAGE_FOLDERS.USERS}/${userId}/${categoryFolder}/${uniqueFilename}`
 }
 
 /**
  * Specific helper for Resume paths
  */
 export function getResumePath(userId, filename) {
-  return generateUserStoragePath(userId, STORAGE_BUCKETS.RESUMES, filename)
+  return generateUserStoragePath(userId, STORAGE_CATEGORIES.RESUMES, filename)
 }
 
 /**
  * Specific helper for Avatar paths
  */
 export function getAvatarPath(userId, filename) {
-  return generateUserStoragePath(userId, STORAGE_BUCKETS.AVATARS, filename)
+  return generateUserStoragePath(userId, STORAGE_CATEGORIES.AVATARS, filename)
 }
 
 /**
  * Specific helper for Report paths
  */
 export function getReportPath(userId, filename) {
-  return generateUserStoragePath(userId, STORAGE_BUCKETS.REPORTS, filename)
+  return generateUserStoragePath(userId, STORAGE_CATEGORIES.REPORTS, filename)
 }
 
 /**
  * Specific helper for Interview Recording paths
  */
 export function getInterviewRecordingPath(userId, filename) {
-  return generateUserStoragePath(userId, STORAGE_BUCKETS.INTERVIEW_RECORDINGS, filename)
+  return generateUserStoragePath(userId, STORAGE_CATEGORIES.INTERVIEW_RECORDINGS, filename)
 }

@@ -5,6 +5,11 @@
  */
 
 export const STORAGE_BUCKETS = {
+  PRIVATE: 'private-user-data',
+  PUBLIC: 'public-assets',
+}
+
+export const STORAGE_CATEGORIES = {
   RESUMES: 'resumes',
   AVATARS: 'avatars',
   REPORTS: 'reports',

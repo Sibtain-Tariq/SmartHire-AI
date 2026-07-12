@@ -1,11 +1,11 @@
 import BaseStorageService from './BaseStorageService'
 import StorageService from './StorageService'
-import { STORAGE_BUCKETS } from '../constants/storage'
+import { STORAGE_BUCKETS, STORAGE_CATEGORIES } from '../constants/storage'
 import { getAvatarPath } from '../utils/storageHelpers'
 
 class AvatarStorageService extends BaseStorageService {
   constructor() {
-    super(STORAGE_BUCKETS.AVATARS, 'AVATAR', getAvatarPath)
+    super(STORAGE_BUCKETS.PUBLIC, STORAGE_CATEGORIES.AVATARS, 'AVATAR', getAvatarPath)
   }
 
   /**
