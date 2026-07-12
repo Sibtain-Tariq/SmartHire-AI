@@ -3,31 +3,66 @@ import { Link, useNavigate } from 'react-router-dom'
 import { User, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
 import { useAuth } from '../context/AuthContext'
+import { calculatePasswordStrength, getFriendlyAuthErrorMessage } from '../../../utils/validationHelpers'
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  
+  // Form State
+  const [password, setPassword] = useState('')
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   const { signUp } = useAuth()
   const navigate = useNavigate()
 
+  const passwordStrength = calculatePasswordStrength(password)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    const name = e.target.name.value.trim()
+    const email = e.target.email.value.trim()
+    const confirmPassword = e.target.confirmPassword.value
+
+    // Validation
+    if (!name || !email || !password || !confirmPassword) {
+      return setError('Please fill in all required fields.')
+    }
+    if (password !== confirmPassword) {
+      return setError('Passwords do not match.')
+    }
+    if (!termsAccepted) {
+      return setError('You must accept the Terms of Service to continue.')
+    }
+    if (passwordStrength.score < 2) {
+      return setError('Your password is too weak. Please use a stronger password.')
+    }
+
     setIsLoading(true)
     setError('')
+    setSuccessMsg('')
     
     try {
       // Pass full name in metadata payload
-      const response = await signUp(e.target.email.value, e.target.password.value, { full_name: e.target.name.value })
+      const response = await signUp(email, password, { full_name: name })
+      
       if (!response.success) {
-        setError(response.error?.message || 'Failed to register.')
+        setError(getFriendlyAuthErrorMessage(response.error?.message))
         setIsLoading(false)
         return
       }
-      navigate('/dashboard')
+      
+      setSuccessMsg('Account created successfully! Redirecting to dashboard...')
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 800)
+      
     } catch (err) {
-      setError(err.message || 'An unexpected error occurred.')
+      setError(getFriendlyAuthErrorMessage(err.message))
       setIsLoading(false)
     }
   }
@@ -47,6 +82,13 @@ export default function RegisterPage() {
           </div>
         ) : null}
 
+        {successMsg ? (
+          <div className="mb-6 flex items-start gap-3 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-700 border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30">
+            <Loader2 size={18} className="mt-0.5 shrink-0 animate-spin" />
+            <p className="font-medium">{successMsg}</p>
+          </div>
+        ) : null}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -61,7 +103,8 @@ export default function RegisterPage() {
                 type="text"
                 placeholder="Jane Doe"
                 required
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isLoading}
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
               />
             </div>
           </div>
@@ -79,7 +122,8 @@ export default function RegisterPage() {
                 type="email"
                 placeholder="you@company.com"
                 required
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isLoading}
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
               />
             </div>
           </div>
@@ -97,15 +141,62 @@ export default function RegisterPage() {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Create a password (min 8 chars)"
                 required
-                minLength={8}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isLoading}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 dark:hover:text-slate-300"
+                disabled={isLoading}
+                className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 disabled:opacity-60 dark:hover:text-slate-300"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            
+            {/* Password Strength Indicator */}
+            {password.length > 0 && (
+              <div className="pt-1">
+                <div className="flex items-center justify-between text-xs mb-1.5">
+                  <span className="text-slate-500 dark:text-slate-400">Password strength:</span>
+                  <span className={`font-medium ${passwordStrength.color.replace('bg-', 'text-')}`}>
+                    {passwordStrength.label}
+                  </span>
+                </div>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-300 ${passwordStrength.color} ${passwordStrength.width}`}
+                  ></div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Confirm Password
+            </label>
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 dark:text-slate-500">
+                <Lock size={18} />
+              </div>
+              <input
+                id="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="Confirm your password"
+                required
+                disabled={isLoading}
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={isLoading}
+                className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 disabled:opacity-60 dark:hover:text-slate-300"
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
@@ -114,8 +205,10 @@ export default function RegisterPage() {
             <label className="flex items-start gap-2 cursor-pointer group">
               <input 
                 type="checkbox" 
-                required
-                className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                disabled={isLoading}
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
               />
               <span className="text-sm text-slate-600 select-none group-hover:text-slate-800 transition dark:text-slate-400 dark:group-hover:text-slate-200">
                 I agree to the <a href="#terms" className="font-medium text-sky-600 hover:text-sky-700">Terms of Service</a> and <a href="#privacy" className="font-medium text-sky-600 hover:text-sky-700">Privacy Policy</a>.
@@ -125,7 +218,7 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || successMsg}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-3.5 text-sm font-semibold text-white outline-none transition hover:bg-slate-800 focus-visible:ring-4 focus-visible:ring-slate-900/10 disabled:opacity-70 disabled:cursor-not-allowed dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
           >
             {isLoading ? <Loader2 size={18} className="animate-spin" /> : 'Create account'}
@@ -140,7 +233,8 @@ export default function RegisterPage() {
 
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 outline-none transition hover:bg-slate-50 focus-visible:ring-4 focus-visible:ring-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+          disabled={isLoading || successMsg}
+          className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 outline-none transition hover:bg-slate-50 focus-visible:ring-4 focus-visible:ring-slate-200 disabled:opacity-70 disabled:cursor-not-allowed dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
             <path
