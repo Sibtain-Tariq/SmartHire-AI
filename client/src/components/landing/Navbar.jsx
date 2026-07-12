@@ -50,17 +50,15 @@ export default function Navbar() {
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
           
-          {/* TODO: Revert to /login when authentication is re-enabled */}
           <Link
-            to="/dashboard"
+            to="/login"
             className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 dark:bg-white dark:bg-slate-950 dark:text-slate-900 dark:text-slate-50 dark:hover:bg-slate-200 dark:shadow-none"
           >
             Login
             <LogIn size={16} />
           </Link>
-          {/* TODO: Revert to /register when authentication is re-enabled */}
           <Link
-            to="/dashboard"
+            to="/register"
             className="hidden items-center gap-2 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 sm:inline-flex dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:text-white"
           >
             Sign up

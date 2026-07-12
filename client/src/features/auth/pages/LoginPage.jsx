@@ -9,7 +9,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
-  const { login } = useAuth()
+  const { signIn } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -18,10 +18,15 @@ export default function LoginPage() {
     setError('')
     
     try {
-      await login(e.target.email.value, e.target.password.value)
+      const response = await signIn(e.target.email.value, e.target.password.value)
+      if (!response.success) {
+        setError(response.error?.message || 'Failed to sign in.')
+        setIsLoading(false)
+        return
+      }
       navigate('/dashboard')
     } catch (err) {
-      setError(err.message)
+      setError(err.message || 'An unexpected error occurred.')
       setIsLoading(false)
     }
   }

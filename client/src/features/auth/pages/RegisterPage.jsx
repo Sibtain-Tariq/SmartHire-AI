@@ -9,7 +9,7 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
-  const { register } = useAuth()
+  const { signUp } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -18,10 +18,16 @@ export default function RegisterPage() {
     setError('')
     
     try {
-      await register(e.target.name.value, e.target.email.value, e.target.password.value)
+      // Pass full name in metadata payload
+      const response = await signUp(e.target.email.value, e.target.password.value, { full_name: e.target.name.value })
+      if (!response.success) {
+        setError(response.error?.message || 'Failed to register.')
+        setIsLoading(false)
+        return
+      }
       navigate('/dashboard')
     } catch (err) {
-      setError(err.message)
+      setError(err.message || 'An unexpected error occurred.')
       setIsLoading(false)
     }
   }

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { LogOut, Settings, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { mockUser } from '../../constants/dashboardNavigation'
+import { useAuth } from '../../../hooks/useAuth'
 
 const menuItems = [
   { label: 'Profile', icon: User, path: '/profile' },
@@ -14,6 +15,7 @@ export default function UserDropdown() {
   const [open, setOpen] = useState(false)
   const containerRef = useRef(null)
   const navigate = useNavigate()
+  const { signOut } = useAuth()
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -68,10 +70,10 @@ export default function UserDropdown() {
                     key={item.label}
                     type="button"
                     role="menuitem"
-                    onClick={() => {
+                    onClick={async () => {
                       setOpen(false)
                       if (item.path === '/logout') {
-                        localStorage.clear()
+                        await signOut()
                         navigate('/')
                       } else {
                         navigate(item.path)

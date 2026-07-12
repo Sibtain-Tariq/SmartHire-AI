@@ -25,7 +25,7 @@ export default function HeroSection() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             {/* TODO: Revert to /register when authentication is re-enabled */}
-            <Link to="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700 dark:bg-white dark:bg-slate-950 dark:text-slate-900 dark:text-slate-50 dark:shadow-none dark:hover:bg-slate-200">
+            <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700 dark:bg-white dark:bg-slate-950 dark:text-slate-900 dark:text-slate-50 dark:shadow-none dark:hover:bg-slate-200">
               Start hiring smarter
               <ArrowRight size={16} />
             </Link>

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
+import { useAuth } from '../../../hooks/useAuth'
 
 export default function SidebarItem({ item, collapsed = false, onSelect, layoutId = 'active-sidebar-item' }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const { signOut } = useAuth()
   const isActive = item.path !== '#' && location.pathname.startsWith(item.path) && (item.path !== '/dashboard' || location.pathname === '/dashboard')
   const Icon = item.icon
   
@@ -56,12 +58,12 @@ export default function SidebarItem({ item, collapsed = false, onSelect, layoutI
         <button 
           type="button" 
           className={itemClass} 
-          onClick={(e) => {
+          onClick={async (e) => {
             if (hasChildren) {
               e.preventDefault();
               setIsOpen(!isOpen);
             } else if (item.path === '#logout') {
-              localStorage.clear();
+              await signOut();
               navigate('/');
               if (onSelect) onSelect(e);
             } else if (onSelect) {
