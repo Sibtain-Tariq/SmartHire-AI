@@ -1,26 +1,25 @@
 import React from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
-// TODO: Re-enable useAuth when authentication is ready
-// import { useAuth } from '../context/AuthContext'
-import { Loader2 } from 'lucide-react'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { useAuth } from '../../../hooks/useAuth'
 
+/**
+ * ProtectedRoute
+ * Guards routes that require active authentication (e.g., Dashboard).
+ * Automatically handles missing or expired sessions by intercepting the user 
+ * and redirecting them to the login page safely.
+ */
 export default function ProtectedRoute({ children }) {
-  // TODO: Re-enable real authentication checks
-  // const { isAuthenticated, loading } = useAuth()
-  const loading = false
-  const isAuthenticated = true
+  const { session } = useAuth()
+  const location = useLocation()
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
-      </div>
-    )
+  // Intercept unauthenticated users
+  if (!session) {
+    // Pass the original target location in React Router state.
+    // This allows the Login page to seamlessly redirect them back 
+    // to their intended destination after a successful authentication!
+    return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
-  }
-
+  // If authenticated, render the child component or the nested routes (Outlet)
   return children ? children : <Outlet />
 }

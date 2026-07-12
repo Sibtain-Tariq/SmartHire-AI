@@ -3,17 +3,16 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { ThemeProvider } from './context/ThemeProvider'
-// import { AuthProvider } from './features/auth/context/AuthContext'
+import { AuthProvider } from './context/AuthContext'
 import './styles/global.css'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
-        {/* TODO: Re-enable AuthProvider when backend authentication is ready */}
-        {/* <AuthProvider> */}
+        <AuthProvider>
           <App />
-        {/* </AuthProvider> */}
+        </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>
