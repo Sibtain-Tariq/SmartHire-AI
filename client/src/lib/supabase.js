@@ -3,8 +3,13 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+// Environment variable validation
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase URL or Anon Key is missing. Storage features will not work until .env is configured.')
+  throw new Error('Supabase URL or Anon Key is missing. Please check your .env file.')
 }
 
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder-key')
+/**
+ * Reusable singleton Supabase client.
+ * Configured for Storage, Database, and Authentication operations.
+ */
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
