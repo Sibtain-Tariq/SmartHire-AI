@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { LogOut, Settings, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { mockUser } from '../../constants/dashboardNavigation'
-import { useAuth } from '../../../hooks/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 
 const menuItems = [
   { label: 'Profile', icon: User, path: '/profile' },

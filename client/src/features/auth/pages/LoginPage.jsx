@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../../../hooks/useAuth'
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)

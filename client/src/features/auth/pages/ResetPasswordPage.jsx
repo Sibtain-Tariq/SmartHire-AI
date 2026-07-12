@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Lock, Loader2, AlertCircle, CheckCircle2, ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../../../hooks/useAuth'
 import { calculatePasswordStrength, getFriendlyAuthErrorMessage } from '../../../utils/validationHelpers'
 
 export default function ResetPasswordPage() {

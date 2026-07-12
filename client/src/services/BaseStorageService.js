@@ -1,6 +1,7 @@
 import StorageService from './StorageService'
 import { validateStorageFile } from '../utils/storageValidation'
 import { STORAGE_FOLDERS } from '../constants/storage'
+import AuthService from './AuthService'
 
 /**
  * BaseStorageService
@@ -26,24 +27,37 @@ export default class BaseStorageService {
   }
 
   /**
+   * Helper to ensure the user is authenticated
+   */
+  async _requireAuth() {
+    const { success, user } = await AuthService.getCurrentUser()
+    if (!success || !user) {
+      throw new Error('User is not authenticated. Cannot perform storage operations.')
+    }
+    return user.id
+  }
+
+  /**
    * Uploads a file.
-   * @param {string} userId
    * @param {File} file 
    * @returns {Promise<import('../types/storageTypes').UploadResult>}
    */
-  async upload(userId, file) {
+  async upload(file) {
     try {
+      const userId = await this._requireAuth()
+
       const validation = validateStorageFile(file, this.category)
       if (!validation.isValid) {
         return { success: false, error: this._formatError(validation.code, validation.error) }
       }
 
+      // Pass user.id to path generator
       const path = this.generatePath(userId, file.name)
       await StorageService.uploadFile(this.bucket, path, file, { cacheControl: '3600', upsert: false })
       
       return { success: true, path }
     } catch (error) {
-      return { success: false, error: this._formatError('UPLOAD_FAILED', `Failed to upload ${this.category.toLowerCase()}.`, error) }
+      return { success: false, error: this._formatError('UPLOAD_FAILED', error.message || `Failed to upload ${this.category.toLowerCase()}.`, error) }
     }
   }
 
@@ -54,6 +68,7 @@ export default class BaseStorageService {
    */
   async download(path) {
     try {
+      await this._requireAuth() // Enforce auth
       const data = await StorageService.downloadFile(this.bucket, path)
       return { success: true, data }
     } catch (error) {
@@ -68,6 +83,7 @@ export default class BaseStorageService {
    */
   async delete(path) {
     try {
+      await this._requireAuth() // Enforce auth
       await StorageService.deleteFile(this.bucket, path)
       return { success: true, path }
     } catch (error) {
@@ -76,18 +92,19 @@ export default class BaseStorageService {
   }
 
   /**
-   * Lists all files for a user.
-   * @param {string} userId 
+   * Lists all files for the authenticated user.
    * @returns {Promise<{ success: boolean, files?: any[], error?: import('../types/storageTypes').StorageError }>}
    */
-  async list(userId) {
+  async list() {
     try {
+      const userId = await this._requireAuth()
+      
       const folderPath = `${STORAGE_FOLDERS.USERS}/${userId}/${this.categoryFolder}`
       const files = await StorageService.listFiles(this.bucket, folderPath)
       const cleanFiles = files.filter(f => f.name !== '.emptyFolderPlaceholder')
       return { success: true, files: cleanFiles }
     } catch (error) {
-      return { success: false, error: this._formatError('LIST_FAILED', `Failed to list ${this.category.toLowerCase()}s.`, error) }
+      return { success: false, error: this._formatError('LIST_FAILED', error.message || `Failed to list ${this.category.toLowerCase()}s.`, error) }
     }
   }
 
@@ -99,6 +116,7 @@ export default class BaseStorageService {
    */
   async getPublicUrl(path) {
     try {
+      await this._requireAuth() // Enforce auth
       // By default, generates a temporary signed URL to protect data.
       const url = await StorageService.getSignedUrl(this.bucket, path, 60)
       return { success: true, url }
