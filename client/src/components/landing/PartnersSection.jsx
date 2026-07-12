@@ -5,7 +5,7 @@ const logos = ['Notion', 'Linear', 'Vercel', 'Stripe', 'Framer', 'Perplexity']
 
 export default function PartnersSection() {
   return (
-    <section className="border-b border-slate-200/80 bg-white/70 px-4 py-8 sm:px-6 lg:px-8">
+    <section className="border-b border-slate-200/80 bg-white/70 px-4 py-8 sm:px-6 lg:px-8 dark:border-slate-800/80 dark:bg-slate-950/70">
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 lg:flex-row lg:justify-between">
         <p className="text-sm font-semibold uppercase tracking-[0.32em] text-slate-500">Trusted by modern teams</p>
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">

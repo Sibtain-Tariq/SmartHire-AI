@@ -4,7 +4,7 @@ import SectionShell from './SectionShell'
 
 export default function NewsletterSection() {
   return (
-    <SectionShell className="bg-slate-50/70">
+    <SectionShell className="bg-slate-50/70 dark:bg-slate-900/70">
       <div className="mx-auto max-w-4xl rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-8 shadow-[0_25px_80px_-40px_rgba(15,23,42,0.45)] sm:p-10">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-xl">

@@ -24,7 +24,7 @@ const reasons = [
 
 export default function WhyChooseSection() {
   return (
-    <SectionShell id="why-choose" className="bg-slate-50/80">
+    <SectionShell id="why-choose" className="bg-slate-50/80 dark:bg-slate-900/80">
       <SectionHeading
         eyebrow="Why SmartHire"
         title="Built for operators who care about quality, speed, and trust"

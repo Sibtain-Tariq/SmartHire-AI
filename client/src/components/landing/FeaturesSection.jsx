@@ -24,7 +24,7 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <SectionShell id="features" className="bg-slate-50/70">
+    <SectionShell id="features" className="bg-slate-50/70 dark:bg-slate-900/70">
       <SectionHeading
         eyebrow="Features"
         title="Everything your team needs to move from intake to offer"

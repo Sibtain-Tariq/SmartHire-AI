@@ -12,7 +12,7 @@ const moments = [
 
 export default function InterviewDemoSection() {
   return (
-    <SectionShell id="interviews" className="bg-slate-50/70">
+    <SectionShell id="interviews" className="bg-slate-50/70 dark:bg-slate-900/70">
       <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
