@@ -40,14 +40,14 @@ export default function FeaturesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.35, delay: index * 0.08 }}
-              className="rounded-[1.75rem] border border-slate-200 bg-white p-8 shadow-[0_25px_70px_-40px_rgba(15,23,42,0.45)]"
+              className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-8 shadow-[0_25px_70px_-40px_rgba(15,23,42,0.45)]"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600/10 via-sky-500/10 to-cyan-400/15 text-sky-600">
                 <Icon size={22} />
               </div>
-              <h3 className="mt-6 text-xl font-semibold text-slate-900">{feature.title}</h3>
-              <p className="mt-3 text-base leading-7 text-slate-600">{feature.description}</p>
-              <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-800">
+              <h3 className="mt-6 text-xl font-semibold text-slate-900 dark:text-slate-50">{feature.title}</h3>
+              <p className="mt-3 text-base leading-7 text-slate-600 dark:text-slate-400">{feature.description}</p>
+              <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
                 <Sparkles size={16} className="text-sky-500" />
                 Built for premium teams
               </div>

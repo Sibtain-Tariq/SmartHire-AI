@@ -19,7 +19,7 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <SectionShell className="bg-white">
+    <SectionShell className="bg-white dark:bg-slate-950">
       <SectionHeading
         eyebrow="Testimonials"
         title="Premium product, measurable impact"
@@ -33,7 +33,7 @@ export default function TestimonialsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.35, delay: index * 0.08 }}
-            className="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-8 shadow-sm"
+            className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-8 shadow-sm"
           >
             <div className="flex gap-1 text-amber-400">
               {Array.from({ length: 5 }).map((_, index) => (
@@ -42,7 +42,7 @@ export default function TestimonialsSection() {
             </div>
             <p className="mt-6 text-lg leading-8 text-slate-700">“{item.quote}”</p>
             <footer className="mt-6">
-              <p className="font-semibold text-slate-900">{item.name}</p>
+              <p className="font-semibold text-slate-900 dark:text-slate-50">{item.name}</p>
               <p className="text-sm text-slate-500">{item.role}</p>
             </footer>
           </motion.blockquote>

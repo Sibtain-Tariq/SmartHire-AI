@@ -40,13 +40,13 @@ export default function WhyChooseSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.35, delay: index * 0.08 }}
-              className="rounded-[1.75rem] border border-slate-200 bg-white p-8 shadow-sm"
+              className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-8 shadow-sm"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600/10 via-sky-500/10 to-cyan-400/15 text-sky-600">
                 <Icon size={22} />
               </div>
-              <h3 className="mt-6 text-xl font-semibold text-slate-900">{reason.title}</h3>
-              <p className="mt-3 text-base leading-7 text-slate-600">{reason.description}</p>
+              <h3 className="mt-6 text-xl font-semibold text-slate-900 dark:text-slate-50">{reason.title}</h3>
+              <p className="mt-3 text-base leading-7 text-slate-600 dark:text-slate-400">{reason.description}</p>
             </motion.div>
           )
         })}

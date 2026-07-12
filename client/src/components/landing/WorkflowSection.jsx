@@ -24,7 +24,7 @@ const steps = [
 
 export default function WorkflowSection() {
   return (
-    <SectionShell id="workflow" className="bg-white">
+    <SectionShell id="workflow" className="bg-white dark:bg-slate-950">
       <SectionHeading
         eyebrow="Workflow"
         title="A calm, high-trust process from attraction to offer"
@@ -40,7 +40,7 @@ export default function WorkflowSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.35, delay: index * 0.08 }}
-              className="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-8 shadow-sm"
+              className="rounded-[1.75rem] border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-8 shadow-sm"
             >
               <div className="flex items-center justify-between">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600/10 via-sky-500/10 to-cyan-400/15 text-sky-600">
@@ -48,8 +48,8 @@ export default function WorkflowSection() {
                 </div>
                 <span className="text-sm font-semibold text-slate-400">0{index + 1}</span>
               </div>
-              <h3 className="mt-6 text-xl font-semibold text-slate-900">{step.title}</h3>
-              <p className="mt-3 text-base leading-7 text-slate-600">{step.description}</p>
+              <h3 className="mt-6 text-xl font-semibold text-slate-900 dark:text-slate-50">{step.title}</h3>
+              <p className="mt-3 text-base leading-7 text-slate-600 dark:text-slate-400">{step.description}</p>
               <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
                 Continue
                 <ArrowRight size={16} />

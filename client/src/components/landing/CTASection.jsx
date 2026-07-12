@@ -21,7 +21,7 @@ export default function CTASection() {
             </p>
           </div>
           {/* TODO: Revert to /register when authentication is re-enabled */}
-          <Link to="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:-translate-y-0.5">
+          <Link to="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-full bg-white dark:bg-slate-950 px-6 py-3 text-sm font-semibold text-slate-900 dark:text-slate-50 transition hover:-translate-y-0.5">
             Sign up
             <ArrowRight size={16} />
           </Link>

@@ -8,7 +8,7 @@ const highlights = ['Auto-summarize candidate intent', 'Detect top-fit roles in 
 
 export default function ATSDemoSection() {
   return (
-    <SectionShell id="ats" className="bg-white">
+    <SectionShell id="ats" className="bg-white dark:bg-slate-950">
       <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
         <div>
           <SectionHeading
@@ -19,13 +19,13 @@ export default function ATSDemoSection() {
           />
           <div className="mt-8 space-y-4">
             {highlights.map((item) => (
-              <div key={item} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div key={item} className="flex items-start gap-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4">
                 <CheckCircle2 size={18} className="mt-0.5 text-emerald-500" />
                 <p className="text-sm font-medium text-slate-700">{item}</p>
               </div>
             ))}
           </div>
-          <a href="#contact" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-slate-900">
+          <a href="#contact" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-50">
             See the live workflow
             <ArrowRight size={16} />
           </a>
@@ -36,7 +36,7 @@ export default function ATSDemoSection() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.35 }}
-          className="rounded-[2rem] border border-slate-200 bg-slate-950 p-5 shadow-[0_30px_90px_-40px_rgba(15,23,42,0.6)]"
+          className="rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-slate-950 p-5 shadow-[0_30px_90px_-40px_rgba(15,23,42,0.6)]"
         >
           <div className="rounded-[1.4rem] border border-white/10 bg-white/10 p-4">
             <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">

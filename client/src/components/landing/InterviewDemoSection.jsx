@@ -19,7 +19,7 @@ export default function InterviewDemoSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.35 }}
-          className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.5)]"
+          className="rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-8 shadow-[0_25px_80px_-45px_rgba(15,23,42,0.5)]"
         >
           <div className="flex items-center gap-3 text-sky-600">
             <Bot size={20} />
@@ -27,7 +27,7 @@ export default function InterviewDemoSection() {
           </div>
           <div className="mt-6 space-y-4">
             {moments.map((moment) => (
-              <div key={moment} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div key={moment} className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4">
                 <p className="text-sm font-medium text-slate-700">{moment}</p>
               </div>
             ))}
@@ -41,7 +41,7 @@ export default function InterviewDemoSection() {
             description="Let the platform handle note-taking and summaries while your team stays focused on evaluating the candidate."
             align="left"
           />
-          <div className="mt-8 rounded-[2rem] border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-800 p-7 text-white shadow-[0_30px_90px_-35px_rgba(15,23,42,0.7)]">
+          <div className="mt-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-900 to-slate-800 p-7 text-white shadow-[0_30px_90px_-35px_rgba(15,23,42,0.7)]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-400">Live conversation</p>

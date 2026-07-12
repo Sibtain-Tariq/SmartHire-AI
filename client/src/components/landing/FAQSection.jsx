@@ -22,7 +22,7 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(0)
 
   return (
-    <SectionShell id="faq" className="bg-white">
+    <SectionShell id="faq" className="bg-white dark:bg-slate-950">
       <SectionHeading
         eyebrow="FAQ"
         title="Questions teams usually ask before they switch"
@@ -32,16 +32,16 @@ export default function FAQSection() {
         {faqs.map((faq, index) => {
           const isOpen = openIndex === index
           return (
-            <div key={faq.question} className="rounded-[1.4rem] border border-slate-200 bg-slate-50 px-6 py-4 shadow-sm">
+            <div key={faq.question} className="rounded-[1.4rem] border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-6 py-4 shadow-sm">
               <button
                 type="button"
                 className="flex w-full items-center justify-between gap-4 text-left"
                 onClick={() => setOpenIndex(isOpen ? -1 : index)}
               >
-                <span className="text-base font-semibold text-slate-900">{faq.question}</span>
+                <span className="text-base font-semibold text-slate-900 dark:text-slate-50">{faq.question}</span>
                 <ChevronDown size={18} className={`transition ${isOpen ? 'rotate-180' : ''}`} />
               </button>
-              {isOpen ? <p className="mt-4 text-sm leading-7 text-slate-600">{faq.answer}</p> : null}
+              {isOpen ? <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-400">{faq.answer}</p> : null}
             </div>
           )
         })}

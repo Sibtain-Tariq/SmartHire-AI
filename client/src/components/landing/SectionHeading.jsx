@@ -8,11 +8,11 @@ export default function SectionHeading({ eyebrow, title, description, align = 'c
           {eyebrow}
         </div>
       ) : null}
-      <h2 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+      <h2 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-50 sm:text-4xl">
         {title}
       </h2>
       {description ? (
-        <p className="mt-4 text-lg leading-8 text-slate-600">{description}</p>
+        <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-400">{description}</p>
       ) : null}
     </div>
   )

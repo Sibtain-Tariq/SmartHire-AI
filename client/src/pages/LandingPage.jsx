@@ -18,7 +18,7 @@ export default function LandingPage() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: 'easeOut' }}
-      className="overflow-hidden bg-white text-slate-900"
+      className="overflow-hidden bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100"
     >
       <Navbar />
       <HeroSection />

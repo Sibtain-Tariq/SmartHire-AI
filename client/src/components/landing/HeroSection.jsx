@@ -5,7 +5,7 @@ import { ArrowRight, Play, Sparkles, ShieldCheck, Bot } from 'lucide-react'
 
 export default function HeroSection() {
   return (
-    <section id="top" className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.16),_transparent_40%),linear-gradient(135deg,_#f8fbff_0%,_#eef4ff_55%,_#fdfefe_100%)] px-4 py-24 sm:px-6 lg:px-8">
+    <section id="top" className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.16),_transparent_40%),linear-gradient(135deg,_#f8fbff_0%,_#eef4ff_55%,_#fdfefe_100%)] dark:bg-slate-950 dark:bg-none px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -13,33 +13,33 @@ export default function HeroSection() {
           transition={{ duration: 0.55, ease: 'easeOut' }}
           className="max-w-2xl"
         >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-sm font-medium text-slate-700 shadow-sm">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-800 bg-white/80 px-3 py-2 text-sm font-medium text-slate-700 shadow-sm dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300">
             <Sparkles size={16} className="text-sky-500" />
             AI recruiting that feels like a premium operator
           </div>
-          <h1 className="text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-            Hire faster with <span className="bg-gradient-to-r from-indigo-600 via-sky-500 to-cyan-400 bg-clip-text text-transparent">clarity</span> and <span className="text-slate-800">confidence</span>.
+          <h1 className="text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl dark:text-slate-50">
+            Hire faster with <span className="bg-gradient-to-r from-indigo-600 via-sky-500 to-cyan-400 bg-clip-text text-transparent">clarity</span> and <span className="text-slate-800 dark:text-slate-200 dark:text-slate-300">confidence</span>.
           </h1>
-          <p className="mt-6 text-lg leading-8 text-slate-600 sm:text-xl">
+          <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-400 sm:text-xl dark:text-slate-400">
             From job descriptions to interviews, SmartHire AI transforms recruiting into a calm, data-rich workflow that helps teams move from first review to offer in days, not weeks.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             {/* TODO: Revert to /register when authentication is re-enabled */}
-            <Link to="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700">
+            <Link to="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-700 dark:bg-white dark:bg-slate-950 dark:text-slate-900 dark:text-slate-50 dark:shadow-none dark:hover:bg-slate-200">
               Start hiring smarter
               <ArrowRight size={16} />
             </Link>
-            <a href="#ats" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white/80 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-white">
+            <a href="#ats" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white/80 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-white dark:bg-slate-950 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-900">
               <Play size={16} />
               Watch the demo
             </a>
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-slate-600">
-            <div className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 shadow-sm">
+          <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-slate-400 dark:text-slate-400">
+            <div className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 shadow-sm dark:bg-slate-900/70 dark:border dark:border-slate-800">
               <ShieldCheck size={16} className="text-emerald-500" />
               Bias-aware screening
             </div>
-            <div className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 shadow-sm">
+            <div className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 shadow-sm dark:bg-slate-900/70 dark:border dark:border-slate-800">
               <Bot size={16} className="text-sky-500" />
               AI interview copilot
             </div>
@@ -52,9 +52,9 @@ export default function HeroSection() {
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
           className="relative"
         >
-          <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-sky-400/20 to-indigo-500/20 blur-3xl" />
-          <div className="relative overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/80 p-4 shadow-[0_30px_90px_-35px_rgba(15,23,42,0.45)] backdrop-blur-xl">
-            <div className="rounded-[1.5rem] border border-slate-200 bg-slate-950 p-5 text-white">
+          <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-sky-400/20 to-indigo-500/20 blur-3xl dark:opacity-30" />
+          <div className="relative overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/80 p-4 shadow-[0_30px_90px_-35px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/80">
+            <div className="rounded-[1.5rem] border border-slate-200 dark:border-slate-800 bg-slate-950 p-5 text-white dark:border-slate-800">
               <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
                 <div>
                   <p className="text-sm text-slate-300">Hiring pulse</p>
