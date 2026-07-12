@@ -13,3 +13,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
  * Configured for Storage, Database, and Authentication operations.
  */
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// Attach verification utility to window in development mode
+import './verifySupabase'
