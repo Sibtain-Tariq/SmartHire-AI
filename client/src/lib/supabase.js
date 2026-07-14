@@ -60,5 +60,3 @@ export const supabase = hasCredentials
   ? createClient(supabaseUrl, supabaseAnonKey)
   : createMockSupabase()
 
-// Attach verification utility to window in development mode
-import './verifySupabase'
