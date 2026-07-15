@@ -2,10 +2,16 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, Calendar, Quote, UploadCloud } from 'lucide-react'
 import { currentFocus, dashboardUser } from '../../../constants/dashboardHomeData'
+import { useAuth } from '../../../hooks/useAuth'
+import UserProfileService from '../../../services/UserProfileService'
 
 
 
 export default function DashboardHero() {
+  const { session } = useAuth()
+  const profile = UserProfileService.getProfileFromSession(session?.user)
+  const firstName = profile?.fullName?.split(' ')[0] || 'User'
+
   const formattedDate = new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     month: 'long',
@@ -29,7 +35,7 @@ export default function DashboardHero() {
             {formattedDate}
           </div>
           <h1 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-slate-50">
-            Welcome back, {dashboardUser.name}.
+            Welcome back, {firstName}.
           </h1>
           <div className="mt-4 flex max-w-3xl gap-3 text-base leading-7 text-slate-600 dark:text-slate-400">
             <Quote size={20} aria-hidden="true" className="mt-1 shrink-0 text-sky-500" />

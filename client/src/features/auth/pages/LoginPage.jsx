@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
 import { useAuth } from '../../../hooks/useAuth'
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [successMsg, setSuccessMsg] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
@@ -15,48 +14,41 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onTouched', // Validate immediately after a field loses focus
+  })
+
   // Handle one-time email verification notification
   useEffect(() => {
     if (location.state?.emailVerified) {
-      setSuccessMsg('Your email has been verified successfully. Please sign in.')
-      // Clear the state so the message doesn't reappear on page reload
+      toast.success('Email verified successfully. Please sign in.', { id: 'email-verified' })
       window.history.replaceState({}, document.title)
     }
   }, [location.state])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    const email = e.target.email.value.trim()
-    const password = e.target.password.value
-    
-    // Basic frontend validation
-    if (!email || !password) {
-      setError('Please fill in all fields.')
-      return
-    }
-
-    setIsLoading(true)
-    setError('')
-    setSuccessMsg('')
-    
+  const onSubmit = async (data) => {
     try {
-      const response = await signIn(email, password)
+      const response = await signIn(data.email, data.password)
+      
       if (!response.success) {
-        setError(response.error?.message || 'Failed to sign in. Please check your credentials.')
-        setIsLoading(false)
+        // Map user-friendly error
+        let errorMsg = response.error?.message || 'Unable to connect. Please try again.'
+        if (errorMsg.toLowerCase().includes('invalid login credentials')) {
+          errorMsg = 'Incorrect email or password.'
+        }
+        toast.error(errorMsg)
         return
       }
       
-      // Show success message briefly before redirecting
-      setSuccessMsg('Successfully signed in! Redirecting to dashboard...')
-      setTimeout(() => {
-        navigate('/dashboard')
-      }, 800)
+      toast.success('Welcome back!')
+      navigate('/dashboard')
       
     } catch (err) {
-      setError(err.message || 'An unexpected error occurred.')
-      setIsLoading(false)
+      toast.error('Unable to connect. Please try again.')
     }
   }
 
@@ -68,21 +60,7 @@ export default function LoginPage() {
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Enter your credentials to access your account.</p>
         </div>
 
-        {error ? (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl bg-red-50 p-4 text-sm text-red-600 border border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30">
-            <AlertCircle size={18} className="mt-0.5 shrink-0" />
-            <p>{error}</p>
-          </div>
-        ) : null}
-
-        {successMsg ? (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-700 border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30">
-            <Loader2 size={18} className="mt-0.5 shrink-0 animate-spin" />
-            <p className="font-medium">{successMsg}</p>
-          </div>
-        ) : null}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Email address
@@ -95,11 +73,25 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 placeholder="you@company.com"
-                required
-                disabled={isLoading}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isSubmitting}
+                {...register('email', { 
+                  required: 'Email is required',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address"
+                  }
+                })}
+                autoFocus // Autofocus first input
+                className={`w-full rounded-2xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition disabled:opacity-60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+                  errors.email 
+                    ? 'border-red-500 ring-4 ring-red-500/10 text-red-900 dark:border-red-500/50 dark:text-red-400' 
+                    : 'border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:hover:border-slate-600'
+                }`}
               />
             </div>
+            {errors.email && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.email.message}</p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -114,19 +106,26 @@ export default function LoginPage() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
-                required
-                disabled={isLoading}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isSubmitting}
+                {...register('password', { required: 'Password is required' })}
+                className={`w-full rounded-2xl border bg-white py-3 pl-11 pr-12 text-sm outline-none transition disabled:opacity-60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+                  errors.password 
+                    ? 'border-red-500 ring-4 ring-red-500/10 text-red-900 dark:border-red-500/50 dark:text-red-400' 
+                    : 'border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:hover:border-slate-600'
+                }`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading}
+                disabled={isSubmitting}
                 className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 disabled:opacity-60 dark:hover:text-slate-300"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {errors.password && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.password.message}</p>
+            )}
           </div>
 
           <div className="flex items-center justify-between py-2">
@@ -135,7 +134,7 @@ export default function LoginPage() {
                 type="checkbox" 
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                disabled={isLoading}
+                disabled={isSubmitting}
                 className="h-4 w-4 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
               />
               <span className="text-sm text-slate-600 select-none group-hover:text-slate-800 transition dark:text-slate-400 dark:group-hover:text-slate-200">Remember me</span>
@@ -148,10 +147,17 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={isLoading || successMsg}
+            disabled={isSubmitting}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-3.5 text-sm font-semibold text-white outline-none transition hover:bg-slate-800 focus-visible:ring-4 focus-visible:ring-slate-900/10 disabled:opacity-70 disabled:cursor-not-allowed dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
           >
-            {isLoading ? <Loader2 size={18} className="animate-spin" /> : 'Sign in'}
+            {isSubmitting ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Signing In...
+              </>
+            ) : (
+              'Sign in'
+            )}
           </button>
         </form>
 
@@ -163,7 +169,8 @@ export default function LoginPage() {
 
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 outline-none transition hover:bg-slate-50 focus-visible:ring-4 focus-visible:ring-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+          disabled={isSubmitting}
+          className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 outline-none transition hover:bg-slate-50 focus-visible:ring-4 focus-visible:ring-slate-200 disabled:opacity-70 disabled:cursor-not-allowed dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
             <path

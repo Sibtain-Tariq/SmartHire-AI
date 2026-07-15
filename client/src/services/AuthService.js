@@ -119,6 +119,21 @@ class AuthService {
   }
 
   /**
+   * Updates the user's metadata (e.g. full_name, avatar_url).
+   * @param {Object} metadata - The object containing the new metadata fields
+   * @returns {Promise<AuthResponse>}
+   */
+  async updateUserMetadata(metadata) {
+    try {
+      const { data, error } = await supabase.auth.updateUser({ data: metadata })
+      if (error) throw error
+      return { success: true, user: data.user }
+    } catch (error) {
+      return this._formatError('UPDATE_METADATA_FAILED', error.message || 'Failed to update user profile.', error)
+    }
+  }
+
+  /**
    * Fetches the current authenticated user asynchronously.
    * Useful to securely check the active user against the Supabase backend.
    * @returns {Promise<AuthResponse>}

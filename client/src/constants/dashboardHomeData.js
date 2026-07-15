@@ -19,7 +19,6 @@ import {
 } from 'lucide-react'
 
 export const dashboardUser = {
-  name: 'Alex Morgan',
   quote: 'Small improvements compound into stronger interviews, sharper resumes, and better opportunities.',
 }
 

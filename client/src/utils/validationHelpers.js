@@ -17,15 +17,27 @@ export function calculatePasswordStrength(password) {
     case 0:
     case 1:
     case 2:
-      return { score, label: 'Weak', color: 'bg-red-500', width: 'w-1/3' }
+      return { score, label: 'Weak', color: 'bg-red-500', width: 'w-1/4' }
     case 3:
+      return { score, label: 'Fair', color: 'bg-amber-400', width: 'w-2/4' }
     case 4:
-      return { score, label: 'Good', color: 'bg-amber-500', width: 'w-2/3' }
+      return { score, label: 'Good', color: 'bg-emerald-400', width: 'w-3/4' }
     case 5:
-      return { score, label: 'Strong', color: 'bg-emerald-500', width: 'w-full' }
+      return { score, label: 'Strong', color: 'bg-emerald-600', width: 'w-full' }
     default:
       return { score: 0, label: 'None', color: 'bg-slate-200', width: 'w-0' }
   }
+}
+
+export function getPasswordRequirements(password) {
+  const p = password || ''
+  return [
+    { label: 'Minimum 8 characters', met: p.length >= 8 },
+    { label: 'One uppercase letter', met: /[A-Z]/.test(p) },
+    { label: 'One lowercase letter', met: /[a-z]/.test(p) },
+    { label: 'One number', met: /[0-9]/.test(p) },
+    { label: 'One special character', met: /[^A-Za-z0-9]/.test(p) },
+  ]
 }
 
 /**

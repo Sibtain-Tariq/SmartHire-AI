@@ -3,11 +3,11 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, MailCheck, Calendar, Crown, Globe, Clock, FileText, Save, CheckCircle2 } from 'lucide-react';
 import Toggle from '../../../components/ui/Toggle';
 import SettingRow from './ui/SettingRow';
+import { useAuth } from '../../../hooks/useAuth';
+import UserProfileService from '../../../services/UserProfileService';
 
-const MOCK_ACCOUNT_DATA = {
+const MOCK_PREFERENCES = {
   status: 'Active',
-  emailVerified: true,
-  memberSince: 'March 15, 2024',
   currentPlan: 'Pro',
   language: 'English (US)',
   timeZone: 'Pacific Time (PT) - UTC-8',
@@ -16,12 +16,19 @@ const MOCK_ACCOUNT_DATA = {
 };
 
 export default function AccountSettings() {
+  const { session } = useAuth();
+  const profile = UserProfileService.getProfileFromSession(session?.user);
+
   const [preferences, setPreferences] = useState({
-    language: MOCK_ACCOUNT_DATA.language,
-    timeZone: MOCK_ACCOUNT_DATA.timeZone,
-    resumeLanguage: MOCK_ACCOUNT_DATA.resumeLanguage,
-    autoSave: MOCK_ACCOUNT_DATA.autoSave
+    language: MOCK_PREFERENCES.language,
+    timeZone: MOCK_PREFERENCES.timeZone,
+    resumeLanguage: MOCK_PREFERENCES.resumeLanguage,
+    autoSave: MOCK_PREFERENCES.autoSave
   });
+
+  const memberSinceFormatted = profile?.createdAt 
+    ? new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(new Date(profile.createdAt))
+    : 'Unknown';
 
   const handlePreferenceChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -55,23 +62,23 @@ export default function AccountSettings() {
               icon={ShieldCheck} 
               title="Account Status" 
               description="Your account is currently fully active." 
-              badgeText={MOCK_ACCOUNT_DATA.status}
+              badgeText={MOCK_PREFERENCES.status}
               badgeColor="bg-emerald-50 text-emerald-700 border border-emerald-200"
             />
             
             <SettingRow 
               icon={MailCheck} 
               title="Email Verification" 
-              description="Your email address has been successfully verified." 
-              badgeText={MOCK_ACCOUNT_DATA.emailVerified ? 'Verified' : 'Unverified'}
-              badgeColor={MOCK_ACCOUNT_DATA.emailVerified ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-rose-50 text-rose-700"}
+              description={profile?.emailVerified ? "Your email address has been successfully verified." : "Please verify your email address to unlock all features."} 
+              badgeText={profile?.emailVerified ? 'Verified' : 'Unverified'}
+              badgeColor={profile?.emailVerified ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-rose-50 text-rose-700 border-rose-200"}
             />
 
             <SettingRow 
               icon={Calendar} 
               title="Member Since" 
               description="The date you joined SmartHire AI." 
-              badgeText={MOCK_ACCOUNT_DATA.memberSince}
+              badgeText={memberSinceFormatted}
             />
 
             <SettingRow 

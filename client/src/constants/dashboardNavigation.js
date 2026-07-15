@@ -22,12 +22,6 @@ export const dashboardFooterNavigation = [
   { label: 'Logout', path: '#logout', icon: LogOut, isDummy: true },
 ]
 
-export const mockUser = {
-  name: 'Alex Morgan',
-  email: 'alex@smarthire.ai',
-  initials: 'AM',
-}
-
 export const mockNotifications = [
   'Dashboard foundation ready',
   'Reusable navigation shell created',

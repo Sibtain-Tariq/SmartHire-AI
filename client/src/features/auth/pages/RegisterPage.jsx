@@ -1,69 +1,58 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { User, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { User, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
 import { useAuth } from '../../../hooks/useAuth'
-import { calculatePasswordStrength, getFriendlyAuthErrorMessage } from '../../../utils/validationHelpers'
+import { calculatePasswordStrength, getPasswordRequirements } from '../../../utils/validationHelpers'
 
 export default function RegisterPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [successMsg, setSuccessMsg] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   
-  // Form State
-  const [password, setPassword] = useState('')
-  const [termsAccepted, setTermsAccepted] = useState(false)
-
   const { signUp } = useAuth()
   const navigate = useNavigate()
 
-  const passwordStrength = calculatePasswordStrength(password)
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onTouched',
+  })
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    const name = e.target.name.value.trim()
-    const email = e.target.email.value.trim()
-    const confirmPassword = e.target.confirmPassword.value
+  const passwordValue = watch('password') || ''
+  const passwordStrength = calculatePasswordStrength(passwordValue)
+  const passwordReqs = getPasswordRequirements(passwordValue)
+  const isPasswordValid = passwordStrength.score === 5
 
-    // Validation
-    if (!name || !email || !password || !confirmPassword) {
-      return setError('Please fill in all required fields.')
-    }
-    if (password !== confirmPassword) {
-      return setError('Passwords do not match.')
-    }
-    if (!termsAccepted) {
-      return setError('You must accept the Terms of Service to continue.')
-    }
-    if (passwordStrength.score < 2) {
-      return setError('Your password is too weak. Please use a stronger password.')
-    }
+  const termsAccepted = watch('termsAccepted')
 
-    setIsLoading(true)
-    setError('')
-    setSuccessMsg('')
-    
+  const onSubmit = async (data) => {
+    if (!isPasswordValid) return
+
     try {
-      // Pass full name in metadata payload
-      const response = await signUp(email, password, { full_name: name })
+      const response = await signUp(data.email, data.password, { full_name: data.name })
       
       if (!response.success) {
-        setError(getFriendlyAuthErrorMessage(response.error?.message))
-        setIsLoading(false)
+        let errorMsg = response.error?.message || 'Unable to connect. Please try again.'
+        if (errorMsg.toLowerCase().includes('already registered') || errorMsg.toLowerCase().includes('already exists')) {
+          errorMsg = 'An account with this email already exists.'
+        }
+        toast.error(errorMsg)
         return
       }
       
-      setSuccessMsg('Account created successfully! Redirecting to dashboard...')
+      toast.success('Account created successfully. Please verify your email.', { duration: 4000 })
+      
       setTimeout(() => {
         navigate('/dashboard')
       }, 800)
       
     } catch (err) {
-      setError(getFriendlyAuthErrorMessage(err.message))
-      setIsLoading(false)
+      toast.error('Unable to connect. Please try again.')
     }
   }
 
@@ -75,21 +64,7 @@ export default function RegisterPage() {
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Get started with SmartHire AI today.</p>
         </div>
 
-        {error ? (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl bg-red-50 p-4 text-sm text-red-600 border border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30">
-            <AlertCircle size={18} className="mt-0.5 shrink-0" />
-            <p>{error}</p>
-          </div>
-        ) : null}
-
-        {successMsg ? (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-700 border border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30">
-            <Loader2 size={18} className="mt-0.5 shrink-0 animate-spin" />
-            <p className="font-medium">{successMsg}</p>
-          </div>
-        ) : null}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
             <label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Full name
@@ -102,11 +77,19 @@ export default function RegisterPage() {
                 id="name"
                 type="text"
                 placeholder="Jane Doe"
-                required
-                disabled={isLoading}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isSubmitting}
+                autoFocus
+                {...register('name', { required: 'Full name is required' })}
+                className={`w-full rounded-2xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition disabled:opacity-60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+                  errors.name 
+                    ? 'border-red-500 ring-4 ring-red-500/10 text-red-900 dark:border-red-500/50 dark:text-red-400' 
+                    : 'border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:hover:border-slate-600'
+                }`}
               />
             </div>
+            {errors.name && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.name.message}</p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -121,11 +104,24 @@ export default function RegisterPage() {
                 id="email"
                 type="email"
                 placeholder="you@company.com"
-                required
-                disabled={isLoading}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isSubmitting}
+                {...register('email', { 
+                  required: 'Email is required',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address"
+                  }
+                })}
+                className={`w-full rounded-2xl border bg-white py-3 pl-11 pr-4 text-sm outline-none transition disabled:opacity-60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+                  errors.email 
+                    ? 'border-red-500 ring-4 ring-red-500/10 text-red-900 dark:border-red-500/50 dark:text-red-400' 
+                    : 'border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:hover:border-slate-600'
+                }`}
               />
             </div>
+            {errors.email && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.email.message}</p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -139,36 +135,52 @@ export default function RegisterPage() {
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Create a password (min 8 chars)"
-                required
-                disabled={isLoading}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                placeholder="Create a password"
+                disabled={isSubmitting}
+                {...register('password', { 
+                  required: 'Password is required',
+                  validate: () => passwordStrength.score === 5 || 'Password does not meet all requirements'
+                })}
+                className={`w-full rounded-2xl border bg-white py-3 pl-11 pr-12 text-sm outline-none transition disabled:opacity-60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+                  errors.password 
+                    ? 'border-red-500 ring-4 ring-red-500/10 text-red-900 dark:border-red-500/50 dark:text-red-400' 
+                    : 'border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:hover:border-slate-600'
+                }`}
               />
               <button
                 type="button"
+                disabled={isSubmitting}
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading}
                 className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 disabled:opacity-60 dark:hover:text-slate-300"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
             
-            {/* Password Strength Indicator */}
-            {password.length > 0 && (
-              <div className="pt-1">
-                <div className="flex items-center justify-between text-xs mb-1.5">
-                  <span className="text-slate-500 dark:text-slate-400">Password strength:</span>
-                  <span className={`font-medium ${passwordStrength.color.replace('bg-', 'text-')}`}>
-                    {passwordStrength.label}
-                  </span>
+            {/* Live Password Requirements & Strength Indicator */}
+            {passwordValue.length > 0 && (
+              <div className="pt-2 space-y-3">
+                {/* Strength Bar */}
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1.5">
+                    <span className="text-slate-500 dark:text-slate-400">Password strength:</span>
+                    <span className={`font-medium ${passwordStrength.color.replace('bg-', 'text-')}`}>
+                      {passwordStrength.label}
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div className={`h-full rounded-full transition-all duration-300 ${passwordStrength.color} ${passwordStrength.width}`}></div>
+                  </div>
                 </div>
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-300 ${passwordStrength.color} ${passwordStrength.width}`}
-                  ></div>
+                
+                {/* Checklist */}
+                <div className="space-y-1.5 pt-1">
+                  {passwordReqs.map((req, i) => (
+                    <div key={i} className={`flex items-center gap-2 text-xs transition-colors duration-200 ${req.met ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                      <CheckCircle2 size={14} className={`transition-opacity duration-200 ${req.met ? 'opacity-100' : 'opacity-40'}`} />
+                      <span>{req.label}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -186,42 +198,61 @@ export default function RegisterPage() {
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm your password"
-                required
-                disabled={isLoading}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                disabled={isSubmitting}
+                {...register('confirmPassword', { 
+                  required: 'Please confirm your password',
+                  validate: (val) => val === passwordValue || 'Passwords do not match.'
+                })}
+                className={`w-full rounded-2xl border bg-white py-3 pl-11 pr-12 text-sm outline-none transition disabled:opacity-60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+                  errors.confirmPassword 
+                    ? 'border-red-500 ring-4 ring-red-500/10 text-red-900 dark:border-red-500/50 dark:text-red-400' 
+                    : 'border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:hover:border-slate-600'
+                }`}
               />
               <button
                 type="button"
+                disabled={isSubmitting}
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                disabled={isLoading}
                 className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 disabled:opacity-60 dark:hover:text-slate-300"
               >
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {errors.confirmPassword && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.confirmPassword.message}</p>
+            )}
           </div>
 
           <div className="py-2">
             <label className="flex items-start gap-2 cursor-pointer group">
               <input 
                 type="checkbox" 
-                checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-                disabled={isLoading}
+                disabled={isSubmitting}
+                {...register('termsAccepted', { required: 'You must accept the Terms of Service to continue.' })}
                 className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
               />
               <span className="text-sm text-slate-600 select-none group-hover:text-slate-800 transition dark:text-slate-400 dark:group-hover:text-slate-200">
                 I agree to the <a href="#terms" className="font-medium text-sky-600 hover:text-sky-700">Terms of Service</a> and <a href="#privacy" className="font-medium text-sky-600 hover:text-sky-700">Privacy Policy</a>.
               </span>
             </label>
+            {errors.termsAccepted && (
+              <p className="mt-2 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.termsAccepted.message}</p>
+            )}
           </div>
 
           <button
             type="submit"
-            disabled={isLoading || successMsg}
+            disabled={isSubmitting || !isPasswordValid || !termsAccepted}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-3.5 text-sm font-semibold text-white outline-none transition hover:bg-slate-800 focus-visible:ring-4 focus-visible:ring-slate-900/10 disabled:opacity-70 disabled:cursor-not-allowed dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
           >
-            {isLoading ? <Loader2 size={18} className="animate-spin" /> : 'Create account'}
+            {isSubmitting ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Creating Account...
+              </>
+            ) : (
+              'Create account'
+            )}
           </button>
         </form>
 
@@ -233,26 +264,14 @@ export default function RegisterPage() {
 
         <button
           type="button"
-          disabled={isLoading || successMsg}
+          disabled={isSubmitting}
           className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 outline-none transition hover:bg-slate-50 focus-visible:ring-4 focus-visible:ring-slate-200 disabled:opacity-70 disabled:cursor-not-allowed dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
-            <path
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-              fill="#4285F4"
-            />
-            <path
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              fill="#34A853"
-            />
-            <path
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-              fill="#FBBC05"
-            />
-            <path
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-              fill="#EA4335"
-            />
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
           Google
         </button>

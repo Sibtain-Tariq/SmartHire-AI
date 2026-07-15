@@ -1,79 +1,67 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Lock, Loader2, AlertCircle, CheckCircle2, ArrowLeft, Eye, EyeOff } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { Lock, Loader2, AlertCircle, ArrowLeft, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
 import { useAuth } from '../../../hooks/useAuth'
-import { calculatePasswordStrength, getFriendlyAuthErrorMessage } from '../../../utils/validationHelpers'
+import { calculatePasswordStrength, getPasswordRequirements } from '../../../utils/validationHelpers'
 
 export default function ResetPasswordPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  
-  const [password, setPassword] = useState('')
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const { updatePassword, signOut, session, isLoading: isAuthLoading } = useAuth()
   const navigate = useNavigate()
 
-  const passwordStrength = calculatePasswordStrength(password)
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onTouched',
+  })
+
+  const passwordValue = watch('password') || ''
+  const passwordStrength = calculatePasswordStrength(passwordValue)
+  const passwordReqs = getPasswordRequirements(passwordValue)
+  const isPasswordValid = passwordStrength.score === 5
 
   // Protect the route: Only allow access during an active recovery session
   useEffect(() => {
-    if (!isAuthLoading && !success) {
+    if (!isAuthLoading && !isSuccess) {
       const isRecovery = sessionStorage.getItem('isPasswordRecovery') === 'true'
-      
-      // If someone manually visits /reset-password without a valid recovery session
       if (!session || !isRecovery) {
         navigate('/login', { replace: true })
       }
     }
-  }, [session, isAuthLoading, success, navigate])
+  }, [session, isAuthLoading, isSuccess, navigate])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    const confirmPassword = e.target.confirmPassword.value
+  const onSubmit = async (data) => {
+    if (!isPasswordValid) return
 
-    if (!password || !confirmPassword) {
-      return setError('Please fill in all fields.')
-    }
-    if (password !== confirmPassword) {
-      return setError('Passwords do not match.')
-    }
-    if (passwordStrength.score < 2) {
-      return setError('Your password is too weak. Please use a stronger password.')
-    }
-
-    setIsLoading(true)
-    setError('')
-    setSuccess(false)
-    
     try {
-      const response = await updatePassword(password)
+      const response = await updatePassword(data.password)
       
       if (!response.success) {
-        setError(getFriendlyAuthErrorMessage(response.error?.message))
-        setIsLoading(false)
+        toast.error(response.error?.message || 'Unable to connect. Please try again.')
         return
       }
 
-      setSuccess(true)
+      toast.success('Password updated successfully.')
+      setIsSuccess(true)
       
-      // Clean up the recovery session state
       sessionStorage.removeItem('isPasswordRecovery')
-      
-      // Force logout so the user can log in with their new credentials
       await signOut()
       
-      // Redirect to login after showing success message
       setTimeout(() => {
         navigate('/login', { replace: true })
       }, 2000)
       
     } catch (err) {
-      setError(getFriendlyAuthErrorMessage(err.message))
-      setIsLoading(false)
+      toast.error('Unable to connect. Please try again.')
     }
   }
 
@@ -85,25 +73,18 @@ export default function ResetPasswordPage() {
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Your new password must be different from previous used passwords.</p>
         </div>
 
-        {error && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30">
-            <AlertCircle size={18} className="mt-0.5 shrink-0" />
-            <p>{error}</p>
-          </div>
-        )}
-
-        {success ? (
+        {isSuccess ? (
           <div className="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-6 text-center dark:border-emerald-900/30 dark:bg-emerald-900/20">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400">
               <CheckCircle2 size={24} />
             </div>
             <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-slate-50">Password reset complete</h3>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-              Your password has been reset successfully. You are now being redirected to the dashboard...
+              Your password has been reset successfully. You are now being redirected to the login...
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-1.5">
               <label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 New password
@@ -116,15 +97,21 @@ export default function ResetPasswordPage() {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Must be at least 8 characters"
-                  required
-                  disabled={isLoading}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                  disabled={isSubmitting}
+                  autoFocus
+                  {...register('password', { 
+                    required: 'Password is required',
+                    validate: () => passwordStrength.score === 5 || 'Password does not meet all requirements'
+                  })}
+                  className={`w-full rounded-2xl border bg-white py-3 pl-11 pr-12 text-sm outline-none transition disabled:opacity-60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+                    errors.password 
+                      ? 'border-red-500 ring-4 ring-red-500/10 text-red-900 dark:border-red-500/50 dark:text-red-400' 
+                      : 'border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:hover:border-slate-600'
+                  }`}
                 />
                 <button
                   type="button"
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 disabled:opacity-60 dark:hover:text-slate-300"
                 >
@@ -132,17 +119,30 @@ export default function ResetPasswordPage() {
                 </button>
               </div>
               
-              {/* Password Strength Indicator */}
-              {password.length > 0 && (
-                <div className="pt-2">
-                  <div className="flex items-center justify-between text-xs mb-1.5">
-                    <span className="text-slate-500 dark:text-slate-400">Password strength:</span>
-                    <span className={`font-medium ${passwordStrength.color.replace('bg-', 'text-')}`}>
-                      {passwordStrength.label}
-                    </span>
+              {/* Live Password Requirements & Strength Indicator */}
+              {passwordValue.length > 0 && (
+                <div className="pt-2 space-y-3">
+                  {/* Strength Bar */}
+                  <div>
+                    <div className="flex items-center justify-between text-xs mb-1.5">
+                      <span className="text-slate-500 dark:text-slate-400">Password strength:</span>
+                      <span className={`font-medium ${passwordStrength.color.replace('bg-', 'text-')}`}>
+                        {passwordStrength.label}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                      <div className={`h-full rounded-full transition-all duration-300 ${passwordStrength.color} ${passwordStrength.width}`}></div>
+                    </div>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                    <div className={`h-full rounded-full transition-all duration-300 ${passwordStrength.color} ${passwordStrength.width}`}></div>
+                  
+                  {/* Checklist */}
+                  <div className="space-y-1.5 pt-1">
+                    {passwordReqs.map((req, i) => (
+                      <div key={i} className={`flex items-center gap-2 text-xs transition-colors duration-200 ${req.met ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                        <CheckCircle2 size={14} className={`transition-opacity duration-200 ${req.met ? 'opacity-100' : 'opacity-40'}`} />
+                        <span>{req.label}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -158,21 +158,46 @@ export default function ResetPasswordPage() {
                 </div>
                 <input
                   id="confirmPassword"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Repeat new password"
-                  required
-                  disabled={isLoading}
-                  className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600"
+                  disabled={isSubmitting}
+                  {...register('confirmPassword', { 
+                    required: 'Please confirm your password',
+                    validate: (val) => val === passwordValue || 'Passwords do not match.'
+                  })}
+                  className={`w-full rounded-2xl border bg-white py-3 pl-11 pr-12 text-sm outline-none transition disabled:opacity-60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+                    errors.confirmPassword 
+                      ? 'border-red-500 ring-4 ring-red-500/10 text-red-900 dark:border-red-500/50 dark:text-red-400' 
+                      : 'border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 dark:border-slate-700 dark:hover:border-slate-600'
+                  }`}
                 />
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition hover:text-slate-600 outline-none focus-visible:text-sky-600 disabled:opacity-60 dark:hover:text-slate-300"
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.confirmPassword.message}</p>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isSubmitting || !isPasswordValid}
               className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-3.5 text-sm font-semibold text-white outline-none transition hover:bg-slate-800 focus-visible:ring-4 focus-visible:ring-slate-900/10 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
             >
-              {isLoading ? <Loader2 size={18} className="animate-spin" /> : 'Reset Password'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Updating Password...
+                </>
+              ) : (
+                'Reset Password'
+              )}
             </button>
             
             <div className="mt-6 flex justify-center">
