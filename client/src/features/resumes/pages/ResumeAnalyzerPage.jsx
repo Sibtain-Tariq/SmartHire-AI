@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FileText, CheckCircle2, AlertCircle, Clock, BarChart3, Target, Sparkles, Building2, Trash2, RefreshCw, Type, Layers } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import DashboardLayout from '../../../components/dashboard/DashboardLayout'
 import DashboardContainer from '../../../components/dashboard/DashboardContainer'
 import { useResumes } from '../hooks/useResumes'
+import { useAuth } from '../../../hooks/useAuth'
 import ResumeDropzone from '../components/ResumeDropzone'
 import ResumeHealthScore from '../components/ResumeHealthScore'
 import ScoreBreakdownCard from '../components/ScoreBreakdownCard'
@@ -15,8 +17,19 @@ import StrengthsWeaknessesSection from '../components/StrengthsWeaknessesSection
 import ImprovementRoadmap from '../components/ImprovementRoadmap'
 import AISuggestionsSection from '../components/AISuggestionsSection'
 import ResumeActionCenter from '../components/ResumeActionCenter'
+import ResumeStorageService from '../../../services/ResumeStorageService'
+import ResumeMetadataService from '../../../services/ResumeMetadataService'
 
 const statusConfig = {
+  // New standardized statuses
+  Uploading: { color: 'text-sky-600', bg: 'bg-sky-50', icon: Clock, label: 'Uploading...' },
+  Uploaded: { color: 'text-indigo-600', bg: 'bg-indigo-50', icon: CheckCircle2, label: 'Securely Stored' },
+  Processing: { color: 'text-amber-600', bg: 'bg-amber-50', icon: Clock, label: 'ATS Processing' },
+  Completed: { color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle2, label: 'Analysis Complete' },
+  Failed: { color: 'text-red-600', bg: 'bg-red-50', icon: AlertCircle, label: 'Processing Failed' },
+  Cancelled: { color: 'text-slate-600', bg: 'bg-slate-50', icon: AlertCircle, label: 'Cancelled' },
+  
+  // Legacy mocks
   parsed: { color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle2, label: 'Successfully Parsed' },
   processing: { color: 'text-sky-600', bg: 'bg-sky-50', icon: Clock, label: 'Currently Processing' },
   needs_review: { color: 'text-amber-600', bg: 'bg-amber-50', icon: AlertCircle, label: 'Requires Manual Review' },
@@ -30,7 +43,8 @@ const getScoreStatus = (score) => {
 }
 
 export default function ResumeAnalyzerPage() {
-  const { resumes } = useResumes()
+  const { session } = useAuth()
+  const { resumes, addResume } = useResumes()
   
   const [activeResume, setActiveResume] = useState(resumes[0] || null)
   const [isUploading, setIsUploading] = useState(false)
@@ -45,10 +59,53 @@ export default function ResumeAnalyzerPage() {
     }
   }, [searchParams, setSearchParams])
 
-  const handleUploadComplete = (file, isSuccess) => {
-    if (isSuccess) {
-      setIsUploading(false)
-      setActiveResume(resumes[0]) // mock picking the new resume
+  const handleUploadComplete = async (file, setProgress, setUploadState, setErrorMessage) => {
+    try {
+      setProgress(15) // Initializing
+      
+      const uploadResult = await ResumeStorageService.upload(file)
+      
+      setProgress(65) // Upload finished, getting secure URL
+
+      if (!uploadResult.success) {
+        setUploadState('error')
+        setErrorMessage(uploadResult.error?.message || 'Failed to securely upload resume.')
+        return
+      }
+
+      const signedUrlResult = await ResumeStorageService.getPublicUrl(uploadResult.path)
+      setProgress(100) // All network operations complete
+      
+      setUploadState('success')
+      
+      // We briefly delay swapping the UI to allow the success animation to play
+      setTimeout(() => {
+        // Generate the canonical Resume Metadata object
+        const newResumeObj = ResumeMetadataService.createMetadata({
+          userId: session?.user?.id,
+          originalFilename: file.name,
+          storagePath: uploadResult.path,
+          fileSize: file.size,
+          mimeType: file.type,
+          status: 'Uploaded'
+        })
+        
+        // Attach UI-specific bridging properties for the dashboard
+        newResumeObj.title = newResumeObj.originalFilename.replace(/\.[^/.]+$/, "")
+        newResumeObj.url = signedUrlResult.success ? signedUrlResult.url : null
+        newResumeObj.created_at = newResumeObj.uploadTime
+        newResumeObj.file_size_kb = newResumeObj.fileSize / 1024
+        
+        // Push to global state and activate
+        addResume(newResumeObj)
+        setActiveResume(newResumeObj)
+        setIsUploading(false)
+        toast.success('Resume metadata successfully created!')
+      }, 1500)
+      
+    } catch (err) {
+      setUploadState('error')
+      setErrorMessage(err.message || 'An unexpected network error occurred.')
     }
   }
 
@@ -58,11 +115,14 @@ export default function ResumeAnalyzerPage() {
   }
 
   const handleRemove = () => {
+    if (activeResume) {
+      removeResume(activeResume.resumeId || activeResume.id)
+    }
     setActiveResume(null)
     setIsUploading(true)
   }
 
-  const status = activeResume ? (statusConfig[activeResume.status] || statusConfig.needs_review) : null
+  const status = activeResume ? (statusConfig[activeResume.currentStatus] || statusConfig[activeResume.status] || statusConfig.needs_review) : null
   const StatusIcon = status?.icon
 
   return (
@@ -70,8 +130,8 @@ export default function ResumeAnalyzerPage() {
       <DashboardContainer className="gap-8 max-w-4xl mx-auto pb-12">
         {/* 1. Page Header */}
         <section className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Resume Analyzer</h1>
-          <p className="text-slate-500">Upload your resume to instantly receive ATS feedback, keyword matching, and AI-driven formatting suggestions.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Resume Analyzer</h1>
+          <p className="text-slate-500 dark:text-slate-400">Upload your resume to instantly receive ATS feedback, keyword matching, and AI-driven formatting suggestions.</p>
         </section>
 
         <AnimatePresence mode="wait">
@@ -88,7 +148,6 @@ export default function ResumeAnalyzerPage() {
                 onUploadComplete={handleUploadComplete}
                 maxSizeMB={5}
                 acceptedTypes={['.pdf', '.docx', '.doc']}
-                mockMode={true}
               />
             </motion.section>
           ) : (
@@ -99,38 +158,38 @@ export default function ResumeAnalyzerPage() {
               className="w-full flex flex-col gap-8"
             >
               {/* 3. Uploaded Resume Section */}
-              <section className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <section className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
                       <FileText size={28} />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900">{activeResume.title}</h3>
-                      <p className="text-sm font-medium text-slate-500">{activeResume.original_filename}</p>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50">{activeResume.title}</h3>
+                      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{activeResume.original_filename}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <button onClick={handleReplace} className="inline-flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                    <button onClick={handleReplace} className="inline-flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-800">
                       <RefreshCw size={16} />
                       Replace
                     </button>
-                    <button onClick={handleRemove} className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100">
+                    <button onClick={handleRemove} className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50">
                       <Trash2 size={16} />
                       Remove
                     </button>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 border-t border-slate-100 pt-5 mt-2">
+                <div className="flex items-center gap-4 border-t border-slate-100 pt-5 mt-2 dark:border-slate-800">
                   <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold ${status.bg} ${status.color}`}>
                     <StatusIcon size={16} />
                     {status.label}
                   </div>
-                  <span className="text-sm font-medium text-slate-400">
+                  <span className="text-sm font-medium text-slate-400 dark:text-slate-500">
                     Uploaded: {new Date(activeResume.created_at).toLocaleDateString()}
                   </span>
-                  <span className="text-sm font-medium text-slate-400">
+                  <span className="text-sm font-medium text-slate-400 dark:text-slate-500">
                     Size: {(activeResume.file_size_kb / 1024).toFixed(2)} MB
                   </span>
                 </div>

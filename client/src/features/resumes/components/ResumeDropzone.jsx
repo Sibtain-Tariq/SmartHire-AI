@@ -12,8 +12,7 @@ import {
 export default function ResumeDropzone({
   onUploadComplete,
   maxSizeMB = 5,
-  acceptedTypes = ['.pdf', '.doc', '.docx'],
-  mockMode = true
+  acceptedTypes = ['.pdf', '.doc', '.docx']
 }) {
   const [uploadState, setUploadState] = useState('idle') // idle, uploading, success, error, validation_error
   const [progress, setProgress] = useState(0)
@@ -41,42 +40,20 @@ export default function ResumeDropzone({
     return true
   }
 
-  const simulateUpload = (file) => {
-    setSelectedFile(file)
-    setUploadState('uploading')
-    setProgress(0)
-    setErrorMessage('')
-
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          const isSuccess = Math.random() > 0.15
-          
-          if (isSuccess) {
-            setUploadState('success')
-            if (onUploadComplete) onUploadComplete(file, true)
-          } else {
-            setErrorMessage('Network error or server timeout. Please try again.')
-            setUploadState('error')
-            if (onUploadComplete) onUploadComplete(file, false)
-          }
-          return 100
-        }
-        return prev + 5
-      })
-    }, 100)
-  }
-
-  const handleProcessFile = (file) => {
+  const handleProcessFile = async (file) => {
     if (validateFile(file)) {
-      if (mockMode) {
-        simulateUpload(file)
-      } else {
-        // Future API hook entry point
-        setSelectedFile(file)
-        setUploadState('uploading')
-        // Parent component would handle actual API call using onUploadComplete
+      setSelectedFile(file)
+      setUploadState('uploading')
+      setProgress(0)
+      setErrorMessage('')
+      
+      if (onUploadComplete) {
+        await onUploadComplete(
+          file, 
+          (val) => setProgress(val),
+          (state) => setUploadState(state),
+          (msg) => setErrorMessage(msg)
+        )
       }
     }
   }
@@ -223,7 +200,7 @@ export default function ResumeDropzone({
             </div>
             <h3 className="text-xl font-bold text-slate-900">Upload Complete!</h3>
             <p className="mt-2 text-sm max-w-sm text-slate-500">
-              "{selectedFile?.name}" has been successfully parsed and added to your library.
+              "{selectedFile?.name}" has been successfully securely uploaded to your private storage.
             </p>
             <div className="mt-8">
               <button 
@@ -247,7 +224,7 @@ export default function ResumeDropzone({
             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-50 text-red-500 shadow-sm ring-8 ring-red-50/50">
               <XCircle size={40} />
             </div>
-            <h3 className="text-xl font-bold text-slate-900">Processing Failed</h3>
+            <h3 className="text-xl font-bold text-slate-900">Upload Failed</h3>
             <p className="mt-2 text-sm max-w-sm text-slate-500">
               {errorMessage}
             </p>
@@ -259,7 +236,7 @@ export default function ResumeDropzone({
                 <Trash2 size={16} /> Remove File
               </button>
               <button 
-                onClick={(e) => { e.stopPropagation(); simulateUpload(selectedFile); }}
+                onClick={(e) => { e.stopPropagation(); handleProcessFile(selectedFile); }}
                 className="rounded-xl bg-red-500 px-6 py-2.5 font-semibold text-white shadow-sm transition hover:bg-red-400"
               >
                 Retry Upload
@@ -271,3 +248,4 @@ export default function ResumeDropzone({
     </div>
   )
 }
+
