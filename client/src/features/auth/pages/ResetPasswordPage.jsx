@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Lock, Loader2, AlertCircle, CheckCircle2, ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
@@ -13,10 +13,22 @@ export default function ResetPasswordPage() {
   
   const [password, setPassword] = useState('')
 
-  const { updatePassword } = useAuth()
+  const { updatePassword, signOut, session, isLoading: isAuthLoading } = useAuth()
   const navigate = useNavigate()
 
   const passwordStrength = calculatePasswordStrength(password)
+
+  // Protect the route: Only allow access during an active recovery session
+  useEffect(() => {
+    if (!isAuthLoading && !success) {
+      const isRecovery = sessionStorage.getItem('isPasswordRecovery') === 'true'
+      
+      // If someone manually visits /reset-password without a valid recovery session
+      if (!session || !isRecovery) {
+        navigate('/login', { replace: true })
+      }
+    }
+  }, [session, isAuthLoading, success, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -48,9 +60,15 @@ export default function ResetPasswordPage() {
 
       setSuccess(true)
       
-      // Automatic login/redirect since session is active
+      // Clean up the recovery session state
+      sessionStorage.removeItem('isPasswordRecovery')
+      
+      // Force logout so the user can log in with their new credentials
+      await signOut()
+      
+      // Redirect to login after showing success message
       setTimeout(() => {
-        navigate('/dashboard')
+        navigate('/login', { replace: true })
       }, 2000)
       
     } catch (err) {

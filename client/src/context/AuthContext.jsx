@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import AuthService from '../services/AuthService'
 
 export const AuthContext = createContext(null)
@@ -7,6 +8,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [session, setSession] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     let unsubscribe = null
@@ -50,10 +52,15 @@ export function AuthProvider({ children }) {
       // Supabase auto-refreshes tokens and triggers these events natively.
       // If a token expires and fails to refresh, Supabase fires SIGNED_OUT.
       switch (event) {
+        case 'PASSWORD_RECOVERY':
+          sessionStorage.setItem('isPasswordRecovery', 'true')
+          setSession(newSession)
+          setUser(newSession?.user || null)
+          navigate('/reset-password', { replace: true })
+          break
         case 'SIGNED_IN':
         case 'TOKEN_REFRESHED':
         case 'INITIAL_SESSION':
-        case 'PASSWORD_RECOVERY':
         case 'USER_UPDATED':
           setSession(newSession)
           setUser(newSession?.user || null)
