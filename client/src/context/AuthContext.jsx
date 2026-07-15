@@ -14,6 +14,11 @@ export function AuthProvider({ children }) {
     let unsubscribe = null
     let isMounted = true
 
+    // Capture URL hash before Supabase consumes it to detect email verifications
+    if (window.location.hash.includes('type=signup')) {
+      sessionStorage.setItem('isEmailVerification', 'true')
+    }
+
     // Initialize session from local storage / Supabase on first load
     const initializeAuth = async () => {
       try {
@@ -62,6 +67,24 @@ export function AuthProvider({ children }) {
         case 'TOKEN_REFRESHED':
         case 'INITIAL_SESSION':
         case 'USER_UPDATED':
+          // Intercept email verification sessions
+          if (sessionStorage.getItem('isEmailVerification') === 'true') {
+            sessionStorage.removeItem('isEmailVerification')
+            
+            // Immediately terminate the transient session so the user must intentionally log in
+            AuthService.signOut().then(() => {
+              if (isMounted) {
+                navigate('/login', { replace: true, state: { emailVerified: true } })
+              }
+            })
+            
+            // Prevent state from registering a session
+            setSession(null)
+            setUser(null)
+            setIsLoading(false)
+            break
+          }
+
           setSession(newSession)
           setUser(newSession?.user || null)
           break

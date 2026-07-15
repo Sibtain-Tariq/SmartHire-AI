@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
 import { useAuth } from '../../../hooks/useAuth'
@@ -13,6 +13,16 @@ export default function LoginPage() {
 
   const { signIn } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Handle one-time email verification notification
+  useEffect(() => {
+    if (location.state?.emailVerified) {
+      setSuccessMsg('Your email has been verified successfully. Please sign in.')
+      // Clear the state so the message doesn't reappear on page reload
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
