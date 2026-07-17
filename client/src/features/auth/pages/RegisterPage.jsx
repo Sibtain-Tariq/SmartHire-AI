@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { User, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
@@ -18,6 +18,7 @@ export default function RegisterPage() {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     mode: 'onTouched',
@@ -227,20 +228,29 @@ export default function RegisterPage() {
           </div>
 
           <div className="py-2">
-            <label htmlFor="termsAccepted" className="flex items-start gap-2 cursor-pointer group">
-              <input 
-                id="termsAccepted"
-                type="checkbox" 
-                disabled={isSubmitting}
-                {...register('termsAccepted', { 
-                  validate: (value) => value === true || value === 'on' || 'You must accept the Terms of Service to continue.' 
-                })}
-                className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
-              />
-              <span className="text-sm text-slate-600 select-none group-hover:text-slate-800 transition dark:text-slate-400 dark:group-hover:text-slate-200">
-                I agree to the <a href="#terms" className="font-medium text-sky-600 hover:text-sky-700">Terms of Service</a> and <a href="#privacy" className="font-medium text-sky-600 hover:text-sky-700">Privacy Policy</a>.
-              </span>
-            </label>
+            <Controller
+              name="termsAccepted"
+              control={control}
+              rules={{
+                validate: (value) => value === true || 'You must accept the Terms of Service to continue.'
+              }}
+              render={({ field: { value, onChange, ...field } }) => (
+                <label htmlFor="termsAccepted" className="flex items-start gap-2 cursor-pointer group">
+                  <input 
+                    {...field}
+                    id="termsAccepted"
+                    type="checkbox" 
+                    disabled={isSubmitting}
+                    checked={value === true}
+                    onChange={(e) => onChange(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
+                  />
+                  <span className="text-sm text-slate-600 select-none group-hover:text-slate-800 transition dark:text-slate-400 dark:group-hover:text-slate-200">
+                    I agree to the <a href="#terms" className="font-medium text-sky-600 hover:text-sky-700">Terms of Service</a> and <a href="#privacy" className="font-medium text-sky-600 hover:text-sky-700">Privacy Policy</a>.
+                  </span>
+                </label>
+              )}
+            />
             {errors.termsAccepted && (
               <p className="mt-2 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.termsAccepted.message}</p>
             )}
