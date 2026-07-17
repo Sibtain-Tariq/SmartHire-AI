@@ -33,14 +33,7 @@ export default function RegisterPage() {
 
   const termsAccepted = watch('termsAccepted')
 
-  useEffect(() => {
-    console.log('[DEBUG] watch("termsAccepted") changed:', termsAccepted)
-  }, [termsAccepted])
-
-  console.log('[DEBUG] immediately before render, termsAccepted =', termsAccepted)
-
   const onSubmit = async (data) => {
-    console.log('[DEBUG] handleSubmit received data:', data)
     if (!isPasswordValid) return
 
     try {
@@ -249,10 +242,6 @@ export default function RegisterPage() {
             {errors.termsAccepted && (
               <p className="mt-2 text-xs text-red-500 flex items-center gap-1.5"><AlertCircle size={12}/>{errors.termsAccepted.message}</p>
             )}
-            {/* TEMPORARY UI LOG */}
-            <div className="mt-3 rounded border border-indigo-200 bg-indigo-50 p-2 text-xs font-mono text-indigo-700">
-              Current Terms Value: {String(termsAccepted)}
-            </div>
           </div>
 
           <button
