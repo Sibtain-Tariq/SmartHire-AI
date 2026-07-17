@@ -227,8 +227,9 @@ export default function RegisterPage() {
           </div>
 
           <div className="py-2">
-            <label className="flex items-start gap-2 cursor-pointer group">
+            <label htmlFor="termsAccepted" className="flex items-start gap-2 cursor-pointer group">
               <input 
+                id="termsAccepted"
                 type="checkbox" 
                 disabled={isSubmitting}
                 {...register('termsAccepted', { required: 'You must accept the Terms of Service to continue.' })}
