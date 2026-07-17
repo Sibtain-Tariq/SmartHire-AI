@@ -42,6 +42,14 @@ export default function ResumeDropzone({
 
   const handleProcessFile = async (file) => {
     if (validateFile(file)) {
+      console.log('[RUNTIME DEBUG: STEP 1] Upload button clicked / File dropped.')
+      console.log('[RUNTIME DEBUG: STEP 1] Selected file details:', {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        rawFileObject: file
+      })
+
       setSelectedFile(file)
       setUploadState('uploading')
       setProgress(0)

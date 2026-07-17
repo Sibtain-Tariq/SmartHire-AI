@@ -14,9 +14,21 @@ class StorageService {
    * @returns {Promise<{ path: string } | null>} The file path if successful, or throws error
    */
   async uploadFile(bucket, path, file, options = { cacheControl: '3600', upsert: false }) {
+    console.log('[RUNTIME DEBUG: STEP 3] Immediately before supabase.storage.upload:', {
+      bucket,
+      path,
+      file,
+      options
+    })
+
     const { data, error } = await supabase.storage
       .from(bucket)
       .upload(path, file, options)
+
+    console.log('[RUNTIME DEBUG: STEP 4] Immediately after supabase.storage.upload. RAW RESULTS:', {
+      data,
+      error
+    })
 
     if (error) {
       console.error(`[StorageService] Upload Error to ${bucket}/${path}:`, error.message)

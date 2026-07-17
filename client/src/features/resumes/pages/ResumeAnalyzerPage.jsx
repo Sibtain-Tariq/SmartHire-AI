@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FileText, CheckCircle2, AlertCircle, Clock, BarChart3, Target, Sparkles, Building2, Trash2, RefreshCw, Type, Layers } from 'lucide-react'
+import { FileText, CheckCircle2, AlertCircle, Clock, BarChart3, Target, Sparkles, Building2, Trash2, RefreshCw, Type, Layers, Eye, Loader2 } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import DashboardLayout from '../../../components/dashboard/DashboardLayout'
@@ -48,6 +48,7 @@ export default function ResumeAnalyzerPage() {
   
   const [activeResume, setActiveResume] = useState(resumes[0] || null)
   const [isUploading, setIsUploading] = useState(false)
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
@@ -124,6 +125,32 @@ export default function ResumeAnalyzerPage() {
     setIsUploading(true)
   }
 
+  const handleReview = async () => {
+    const path = activeResume?.storagePath || activeResume?.storage_path
+    if (!path) {
+      toast.error('Unable to preview resume. Storage path not found.')
+      return
+    }
+
+    setIsPreviewLoading(true)
+    const toastId = toast.loading('Generating preview...')
+    
+    try {
+      const result = await ResumeStorageService.getPublicUrl(path)
+      
+      if (result.success && result.url) {
+        toast.dismiss(toastId)
+        window.open(result.url, '_blank')
+      } else {
+        toast.error('Unable to preview resume. Please try again.', { id: toastId })
+      }
+    } catch (error) {
+      toast.error('Unable to preview resume. Please try again.', { id: toastId })
+    } finally {
+      setIsPreviewLoading(false)
+    }
+  }
+
   const status = activeResume ? (statusConfig[activeResume.currentStatus] || statusConfig[activeResume.status] || statusConfig.needs_review) : null
   const StatusIcon = status?.icon
 
@@ -172,6 +199,14 @@ export default function ResumeAnalyzerPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
+                    <button 
+                      onClick={handleReview} 
+                      disabled={isPreviewLoading}
+                      className="inline-flex items-center gap-2 rounded-xl bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700 transition hover:bg-sky-100 disabled:opacity-60 dark:bg-sky-900/30 dark:text-sky-400 dark:hover:bg-sky-900/50"
+                    >
+                      {isPreviewLoading ? <Loader2 size={16} className="animate-spin" /> : <Eye size={16} />}
+                      Review CV
+                    </button>
                     <button onClick={handleReplace} className="inline-flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-800">
                       <RefreshCw size={16} />
                       Replace

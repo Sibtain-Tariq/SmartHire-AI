@@ -43,35 +43,49 @@ export default class BaseStorageService {
    * @returns {Promise<import('../types/storageTypes').UploadResult>}
    */
   async upload(file) {
-    console.log('[DEBUG] 5. At the beginning of BaseStorageService.upload().')
     try {
-      const userId = await this._requireAuth()
+      const { success, user } = await AuthService.getCurrentUser()
+      if (!success || !user) {
+        throw new Error('User is not authenticated. Cannot perform storage operations.')
+      }
+      const userId = user.id
 
       const validation = validateStorageFile(file, this.category)
       if (!validation.isValid) {
         return { success: false, error: this._formatError(validation.code, validation.error) }
       }
 
-      // Pass user.id to path generator
       const path = this.generatePath(userId, file.name)
-      
-      console.log('[DEBUG] 6. Immediately before the Supabase SDK upload() call.', {
+
+      console.log('[RUNTIME DEBUG: STEP 2 & 7] Before calling upload():', {
+        authenticatedUser: user,
+        userId: userId,
         bucketName: this.bucket,
-        storagePath: path,
-        authenticatedUserId: userId,
-        filename: file.name
+        generatedStoragePath: path,
+        supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
+        supabaseAnonKeyExists: !!import.meta.env.VITE_SUPABASE_ANON_KEY
       })
       
       const uploadResponse = await StorageService.uploadFile(this.bucket, path, file, { cacheControl: '3600', upsert: false })
       
-      console.log('[DEBUG] 7. Immediately after the Supabase SDK upload() call.', {
-        uploadResponse: uploadResponse || 'Success (No payload returned)'
+      console.log('[RUNTIME DEBUG: STEP 5] Upload succeeded. Running storage.list()...')
+      const folderPath = `${STORAGE_FOLDERS.USERS}/${userId}/${this.categoryFolder}`
+      const listResponse = await StorageService.listFiles(this.bucket, folderPath)
+      
+      console.log('[RUNTIME DEBUG: STEP 5] storage.list() results for folder:', folderPath, {
+        returnedFiles: listResponse,
+        count: listResponse?.length || 0
       })
       
       return { success: true, path }
     } catch (error) {
-      console.log('[DEBUG] 8. Upload error caught in BaseStorageService.', {
-        uploadError: error.message || error
+      console.error('[RUNTIME DEBUG: STEP 6] Upload failed in BaseStorageService. COMPLETE ERROR:', {
+        status: error.status,
+        message: error.message,
+        hint: error.hint,
+        details: error.details,
+        errorCode: error.code,
+        rawError: error
       })
       return { success: false, error: this._formatError('UPLOAD_FAILED', error.message || `Failed to upload ${this.category.toLowerCase()}.`, error) }
     }
