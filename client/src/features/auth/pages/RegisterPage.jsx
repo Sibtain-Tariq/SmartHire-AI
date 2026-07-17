@@ -21,6 +21,9 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm({
     mode: 'onTouched',
+    defaultValues: {
+      termsAccepted: false
+    }
   })
 
   const passwordValue = watch('password') || ''
@@ -242,7 +245,7 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            disabled={isSubmitting || !isPasswordValid || !termsAccepted}
+            disabled={isSubmitting || !isPasswordValid}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-3.5 text-sm font-semibold text-white outline-none transition hover:bg-slate-800 focus-visible:ring-4 focus-visible:ring-slate-900/10 disabled:opacity-70 disabled:cursor-not-allowed dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
           >
             {isSubmitting ? (

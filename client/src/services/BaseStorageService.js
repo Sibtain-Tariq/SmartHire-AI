@@ -43,6 +43,7 @@ export default class BaseStorageService {
    * @returns {Promise<import('../types/storageTypes').UploadResult>}
    */
   async upload(file) {
+    console.log('[DEBUG] 5. At the beginning of BaseStorageService.upload().')
     try {
       const userId = await this._requireAuth()
 
@@ -53,10 +54,25 @@ export default class BaseStorageService {
 
       // Pass user.id to path generator
       const path = this.generatePath(userId, file.name)
-      await StorageService.uploadFile(this.bucket, path, file, { cacheControl: '3600', upsert: false })
+      
+      console.log('[DEBUG] 6. Immediately before the Supabase SDK upload() call.', {
+        bucketName: this.bucket,
+        storagePath: path,
+        authenticatedUserId: userId,
+        filename: file.name
+      })
+      
+      const uploadResponse = await StorageService.uploadFile(this.bucket, path, file, { cacheControl: '3600', upsert: false })
+      
+      console.log('[DEBUG] 7. Immediately after the Supabase SDK upload() call.', {
+        uploadResponse: uploadResponse || 'Success (No payload returned)'
+      })
       
       return { success: true, path }
     } catch (error) {
+      console.log('[DEBUG] 8. Upload error caught in BaseStorageService.', {
+        uploadError: error.message || error
+      })
       return { success: false, error: this._formatError('UPLOAD_FAILED', error.message || `Failed to upload ${this.category.toLowerCase()}.`, error) }
     }
   }

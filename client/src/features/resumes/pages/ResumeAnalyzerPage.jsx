@@ -63,7 +63,9 @@ export default function ResumeAnalyzerPage() {
     try {
       setProgress(15) // Initializing
       
+      console.log('[DEBUG] 1. ResumeAnalyzerPage: BEFORE ResumeStorageService.upload()', { filename: file.name, size: file.size, type: file.type })
       const uploadResult = await ResumeStorageService.upload(file)
+      console.log('[DEBUG] 2. ResumeAnalyzerPage: AFTER ResumeStorageService.upload()', uploadResult)
       
       setProgress(65) // Upload finished, getting secure URL
 
