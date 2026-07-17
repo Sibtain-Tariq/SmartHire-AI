@@ -232,7 +232,9 @@ export default function RegisterPage() {
                 id="termsAccepted"
                 type="checkbox" 
                 disabled={isSubmitting}
-                {...register('termsAccepted', { required: 'You must accept the Terms of Service to continue.' })}
+                {...register('termsAccepted', { 
+                  validate: (value) => value === true || value === 'on' || 'You must accept the Terms of Service to continue.' 
+                })}
                 className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-sky-600 transition focus:ring-sky-500/20 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:checked:bg-sky-600" 
               />
               <span className="text-sm text-slate-600 select-none group-hover:text-slate-800 transition dark:text-slate-400 dark:group-hover:text-slate-200">
