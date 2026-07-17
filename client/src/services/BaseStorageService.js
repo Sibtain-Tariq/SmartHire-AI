@@ -22,8 +22,33 @@ export default class BaseStorageService {
     this.generatePath = pathGenerator
   }
 
+  _sanitizeErrorMessage(errorMsg) {
+    if (!errorMsg || typeof errorMsg !== 'string') return 'An unexpected network error occurred. Please try again.'
+    const msg = errorMsg.toLowerCase()
+
+    // Map common raw technical errors to friendly SaaS messages
+    if (msg.includes('fetch') || msg.includes('network') || msg.includes('failed to fetch')) {
+      return 'Network connection lost. Please check your internet and try again.'
+    }
+    if (msg.includes('row-level security') || msg.includes('permission denied') || msg.includes('unauthorized') || msg.includes('jwt')) {
+      return 'Your session has expired or you lack permission. Please log in again.'
+    }
+    if (msg.includes('storage') && msg.includes('not found')) {
+      return 'The storage bucket is currently unavailable. Please contact support.'
+    }
+    if (msg.includes('error code') || msg.includes('violates') || msg.includes('syntax') || msg.includes('failed to parse')) {
+      return 'A secure connection error occurred. Please try again later.'
+    }
+    
+    // Fallback block for massive raw Postgres/Supabase stack traces
+    if (errorMsg.length > 150) return 'An unexpected connection error occurred during the upload process.'
+    
+    return errorMsg
+  }
+
   _formatError(code, message, originalError = null) {
-    return { code, message, originalError }
+    const safeMessage = this._sanitizeErrorMessage(message || originalError?.message)
+    return { code, message: safeMessage, originalError }
   }
 
   /**
@@ -144,11 +169,11 @@ export default class BaseStorageService {
    * @param {string} path 
    * @returns {Promise<import('../types/storageTypes').DownloadResult>}
    */
-  async getPublicUrl(path) {
+  async getPublicUrl(path, options = {}) {
     try {
       await this._requireAuth() // Enforce auth
       // By default, generates a temporary signed URL to protect data.
-      const url = await StorageService.getSignedUrl(this.bucket, path, 60)
+      const url = await StorageService.getSignedUrl(this.bucket, path, 60, options)
       return { success: true, url }
     } catch (error) {
       return { success: false, error: this._formatError('URL_GENERATION_FAILED', `Failed to retrieve URL for ${this.category.toLowerCase()}.`, error) }

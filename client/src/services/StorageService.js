@@ -97,10 +97,10 @@ class StorageService {
    * @param {number} expiresIn - Expiration time in seconds (default 60 seconds)
    * @returns {Promise<string>} The signed URL string
    */
-  async getSignedUrl(bucket, path, expiresIn = 60) {
+  async getSignedUrl(bucket, path, expiresIn = 60, options = {}) {
     const { data, error } = await supabase.storage
       .from(bucket)
-      .createSignedUrl(path, expiresIn)
+      .createSignedUrl(path, expiresIn, options)
 
     if (error) {
       console.error(`[StorageService] Signed URL Error for ${bucket}/${path}:`, error.message)

@@ -49,6 +49,8 @@ export default function ResumeAnalyzerPage() {
   const [activeResume, setActiveResume] = useState(resumes[0] || null)
   const [isUploading, setIsUploading] = useState(false)
   const [isPreviewLoading, setIsPreviewLoading] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [resumeToReplace, setResumeToReplace] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
@@ -104,6 +106,16 @@ export default function ResumeAnalyzerPage() {
         setActiveResume(newResumeObj)
         setIsUploading(false)
         toast.success('Resume metadata successfully created!')
+
+        // CLEANUP ORPHAN FILE IF REPLACING
+        if (resumeToReplace) {
+          const oldPath = resumeToReplace.storagePath || resumeToReplace.storage_path
+          if (oldPath) {
+            ResumeStorageService.delete(oldPath).catch(err => console.error('[Storage] Failed to delete old replaced file:', err))
+          }
+          removeResume(resumeToReplace.resumeId || resumeToReplace.id)
+          setResumeToReplace(null)
+        }
       }, 1500)
       
     } catch (err) {
@@ -113,16 +125,44 @@ export default function ResumeAnalyzerPage() {
   }
 
   const handleReplace = () => {
+    setResumeToReplace(activeResume) // Securely track old resume for post-upload cleanup
     setIsUploading(true)
     setActiveResume(null)
   }
 
-  const handleRemove = () => {
-    if (activeResume) {
+  const handleRemove = async () => {
+    if (!activeResume) return
+
+    const confirmDelete = window.confirm("Are you sure you want to permanently delete this resume? This action cannot be undone.")
+    if (!confirmDelete) return
+
+    const path = activeResume.storagePath || activeResume.storage_path
+    
+    if (!path) {
       removeResume(activeResume.resumeId || activeResume.id)
+      setActiveResume(null)
+      setIsUploading(true)
+      return
     }
-    setActiveResume(null)
-    setIsUploading(true)
+
+    setIsDeleting(true)
+    const toastId = toast.loading('Deleting securely from storage...')
+    try {
+      const result = await ResumeStorageService.delete(path)
+      if (!result.success) {
+        throw new Error(result.error?.message || 'Network error occurred during deletion.')
+      }
+
+      removeResume(activeResume.resumeId || activeResume.id)
+      setActiveResume(null)
+      setIsUploading(true)
+      toast.success('Resume deleted successfully.', { id: toastId })
+    } catch (err) {
+      console.error('[Storage] Failed to delete removed file:', err)
+      toast.error(err.message || 'Unable to delete resume. Please check your connection and try again.', { id: toastId })
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   const handleReview = async () => {
@@ -136,7 +176,11 @@ export default function ResumeAnalyzerPage() {
     const toastId = toast.loading('Generating preview...')
     
     try {
-      const result = await ResumeStorageService.getPublicUrl(path)
+      const path = activeResume.storagePath || activeResume.storage_path
+      const originalName = activeResume.original_filename || activeResume.originalFilename || ''
+      const isDoc = originalName.toLowerCase().endsWith('.doc') || originalName.toLowerCase().endsWith('.docx')
+      
+      const result = await ResumeStorageService.getPublicUrl(path, isDoc ? { download: true } : {})
       
       if (result.success && result.url) {
         toast.dismiss(toastId)
@@ -211,8 +255,12 @@ export default function ResumeAnalyzerPage() {
                       <RefreshCw size={16} />
                       Replace
                     </button>
-                    <button onClick={handleRemove} className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50">
-                      <Trash2 size={16} />
+                    <button 
+                      onClick={handleRemove} 
+                      disabled={isDeleting}
+                      className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:opacity-60 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+                    >
+                      {isDeleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                       Remove
                     </button>
                   </div>
